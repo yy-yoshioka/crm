@@ -28,8 +28,9 @@ export const name = z
 export const phone = z
   .string()
   .min(1, { message: 'Phone number is required' })
-  .regex(/^(\+\d{1,3}[ -]?)?\(?\d{3}\)?[ -]?\d{3}[ -]?\d{4}$/, {
-    message: 'Please enter a valid phone number',
+  .regex(/^[+\-\(\)\d\s.]+$/, {
+    message:
+      'Please enter a valid phone number (digits, spaces, and +-() allowed)',
   });
 
 export const url = z

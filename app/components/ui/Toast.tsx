@@ -39,7 +39,10 @@ const generateId = () => Math.random().toString(36).substring(2, 10);
 // Provider component
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
-
+  // Remove a toast by ID
+  const removeToast = useCallback((id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  }, []);
   // Add a new toast
   const addToast = useCallback(
     (toast: Omit<Toast, 'id'>) => {
@@ -54,11 +57,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     },
     [removeToast]
   );
-
-  // Remove a toast by ID
-  const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
