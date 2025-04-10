@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/app/lib/supabase/server';
 import { updateCustomerSchema } from '@/app/lib/validations/customer';
 import { z } from 'zod';
@@ -9,14 +9,17 @@ import {
   successResponse 
 } from '@/app/lib/api-response';
 
+export interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
 /**
  * GET /api/customers/[id]
  * Get a specific customer by ID
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await createClient();
     
@@ -67,10 +70,7 @@ export async function GET(
  * PUT /api/customers/[id]
  * Update a specific customer
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await createClient();
     
@@ -92,7 +92,7 @@ export async function PUT(
     const validatedData = updateCustomerSchema.parse({ ...body, id });
     
     // Remove id from update data
-    const { id: _id, ...updateData } = validatedData;
+    const { id: _, ...updateData } = validatedData;
     
     // Update customer in database
     const { data, error } = await supabase
@@ -124,10 +124,7 @@ export async function PUT(
  * DELETE /api/customers/[id]
  * Delete a specific customer
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const supabase = await createClient();
     
