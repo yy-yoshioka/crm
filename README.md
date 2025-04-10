@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Customer Management CRM
+
+A modern, responsive customer relationship management (CRM) system built with Next.js 15, Supabase, and TypeScript. This application allows businesses to manage their customer data, track customer status, and perform various operations with role-based access control.
+
+## Features
+
+- **Authentication & Authorization**: Secure login with role-based access control (RBAC)
+- **Customer Management**: Add, edit, view, and delete customer records
+- **Search and Filtering**: Find customers quickly with powerful search and filtering capabilities
+- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
+- **Real-time Updates**: See changes instantly with optimistic UI updates
+- **Data Validation**: Forms with comprehensive validation to ensure data integrity
+- **Error Handling**: Robust error handling throughout the application
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 (App Router), React 19, TypeScript 5
+- **Styling**: TailwindCSS 4
+- **Backend & Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Form Validation**: Zod
+- **Testing**: Jest, React Testing Library
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.x or higher
+- Yarn or npm
+- Supabase account
+
+### Environment Setup
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/nextjs-supabase-template.git
+cd nextjs-supabase-template
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn install
+# or
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Create a `.env.local` file in the root directory with your Supabase credentials:
 
-## Learn More
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Set up your Supabase database using the migrations:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cd supabase
+# Follow instructions in supabase/README.md to run migrations
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Development
 
-## Deploy on Vercel
+Run the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+yarn dev
+# or
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+### Testing
+
+Run tests:
+
+```bash
+yarn test
+# or
+npm run test
+```
+
+Run tests in watch mode:
+
+```bash
+yarn test:watch
+# or
+npm run test:watch
+```
+
+### Building for Production
+
+Build the application:
+
+```bash
+yarn build
+# or
+npm run build
+```
+
+Start the production server:
+
+```bash
+yarn start
+# or
+npm run start
+```
+
+## Project Structure
+
+- `/app` - Main application code
+  - `/api` - API routes for server-side operations
+  - `/components` - Reusable React components
+  - `/context` - React context providers
+  - `/hooks` - Custom React hooks
+  - `/lib` - Utility functions and types
+  - `/*` - Page routes using Next.js App Router
+
+## User Roles
+
+The application supports the following user roles:
+
+- **Admin**: Full access to all features
+- **Manager**: Can view, create, and edit customers
+- **Viewer**: Read-only access to customer data
+
+## License
+
+[MIT](LICENSE)
