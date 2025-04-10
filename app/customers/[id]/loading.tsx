@@ -6,10 +6,7 @@ export default function CustomerDetailLoading() {
   return (
     <>
       <Navbar />
-      <PageContainer
-        title="Loading Customer..."
-        description="Please wait"
-      >
+      <PageContainer title="Loading Customer..." description="Please wait">
         <div className="h-96 flex items-center justify-center">
           <LoadingSpinner size="lg" />
         </div>

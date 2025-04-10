@@ -17,14 +17,16 @@ export const metadata: Metadata = {
 // This component handles authentication check
 async function CustomersPageContent() {
   const supabase = await createClient();
-  
+
   // Check authentication
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) {
     redirect('/login');
   }
-  
+
   return (
     <PageContainer
       title="Customers"
@@ -32,8 +34,16 @@ async function CustomersPageContent() {
       actions={
         <Link href="/customers/new">
           <Button>
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+            <svg
+              className="w-5 h-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clipRule="evenodd"
+              />
             </svg>
             Add Customer
           </Button>
@@ -49,17 +59,19 @@ async function CustomersPageContent() {
 export default function CustomersPage() {
   // We're not using search params directly since the CustomerList component
   // will extract them internally via useSearchParams hook
-  
+
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <PageContainer>
-          <div className="h-96 flex items-center justify-center">
-            <LoadingSpinner size="lg" />
-          </div>
-        </PageContainer>
-      }>
+      <Suspense
+        fallback={
+          <PageContainer>
+            <div className="h-96 flex items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          </PageContainer>
+        }
+      >
         <CustomersPageContent />
       </Suspense>
     </>

@@ -1,7 +1,7 @@
 'use client';
 
-import { UserRole } from "@/app/lib/database.types";
-import { ReactNode } from "react";
+import { UserRole } from '@/app/lib/database.types';
+import { ReactNode } from 'react';
 
 interface RoleGateProps {
   /**
@@ -29,7 +29,7 @@ export default function RoleGate({
   allowedRoles,
   userRole,
   children,
-  fallback
+  fallback,
 }: RoleGateProps) {
   if (!userRole) {
     return fallback || null;

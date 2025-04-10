@@ -30,16 +30,13 @@ export default function SettingsError({ error, reset }: ErrorProps) {
               Something went wrong
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We encountered an error while trying to load your account settings.
+              We encountered an error while trying to load your account
+              settings.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
+              <Button onClick={reset}>Try again</Button>
               <Link href="/dashboard">
-                <Button variant="outline">
-                  Return to dashboard
-                </Button>
+                <Button variant="outline">Return to dashboard</Button>
               </Link>
             </div>
           </div>

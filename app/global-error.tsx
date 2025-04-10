@@ -52,9 +52,7 @@ export default function GlobalError({
                     <div className="mt-2 text-sm text-red-700">
                       <p>{getErrorMessage(error)}</p>
                       {error.digest && (
-                        <p className="mt-1 text-xs">
-                          Error ID: {error.digest}
-                        </p>
+                        <p className="mt-1 text-xs">Error ID: {error.digest}</p>
                       )}
                     </div>
                   </div>

@@ -23,17 +23,17 @@ export default function useAuth() {
     try {
       setIsAuthLoading(true);
       setAuthError(null);
-      
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
+
       if (error) {
         setAuthError(error.message);
         return false;
       }
-      
+
       router.refresh();
       return true;
     } catch (error) {
@@ -52,7 +52,7 @@ export default function useAuth() {
     try {
       setIsAuthLoading(true);
       setAuthError(null);
-      
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -60,12 +60,12 @@ export default function useAuth() {
           emailRedirectTo: `${window.location.origin}/api/auth/callback`,
         },
       });
-      
+
       if (error) {
         setAuthError(error.message);
         return false;
       }
-      
+
       return true;
     } catch (error) {
       console.error('Sign up error:', error);
@@ -99,16 +99,16 @@ export default function useAuth() {
     try {
       setIsAuthLoading(true);
       setAuthError(null);
-      
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/api/auth/callback?next=/reset-password`,
       });
-      
+
       if (error) {
         setAuthError(error.message);
         return false;
       }
-      
+
       return true;
     } catch (error) {
       console.error('Reset password error:', error);

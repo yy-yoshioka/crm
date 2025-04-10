@@ -32,10 +32,11 @@ export default function CustomersError({ error, reset }: ErrorProps) {
               We encountered an error while trying to load the customer list.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
-              <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+              <Button onClick={reset}>Try again</Button>
+              <Button
+                variant="outline"
+                onClick={() => (window.location.href = '/dashboard')}
+              >
                 Back to dashboard
               </Button>
             </div>

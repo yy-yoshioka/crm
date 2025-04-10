@@ -16,23 +16,23 @@ export const metadata: Metadata = {
 
 async function NewCustomerPageContent() {
   const supabase = await createClient();
-  
+
   // Check authentication
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) {
     redirect('/login');
   }
-  
+
   return (
     <PageContainer
       title="Add New Customer"
       description="Create a new customer record in the system"
       actions={
         <Link href="/customers">
-          <Button variant="outline">
-            Cancel
-          </Button>
+          <Button variant="outline">Cancel</Button>
         </Link>
       }
     >
@@ -47,13 +47,15 @@ export default function NewCustomerPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <PageContainer>
-          <div className="h-96 flex items-center justify-center">
-            <LoadingSpinner size="lg" />
-          </div>
-        </PageContainer>
-      }>
+      <Suspense
+        fallback={
+          <PageContainer>
+            <div className="h-96 flex items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          </PageContainer>
+        }
+      >
         <NewCustomerPageContent />
       </Suspense>
     </>

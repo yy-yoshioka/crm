@@ -14,23 +14,25 @@ export const metadata: Metadata = {
 
 async function SettingsPageContent() {
   const supabase = await createClient();
-  
+
   // Check authentication
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) {
     redirect('/login');
   }
-  
+
   // Get user data including role
   const { data: userData } = await supabase
     .from('users')
     .select('*')
     .eq('id', user.id)
     .single();
-  
+
   const isAdmin = userData?.role === 'admin';
-  
+
   // Sign out function
   async function handleSignOut() {
     'use server';
@@ -38,7 +40,7 @@ async function SettingsPageContent() {
     await supabase.auth.signOut();
     redirect('/login');
   }
-  
+
   return (
     <PageContainer
       title="Account Settings"
@@ -55,27 +57,37 @@ async function SettingsPageContent() {
           <div className="p-6">
             <div className="space-y-6">
               <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email Address</h4>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white">{user.email}</p>
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Email Address
+                </h4>
+                <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {user.email}
+                </p>
               </div>
-              
+
               <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Role</h4>
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Role
+                </h4>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white capitalize">
                   {userData?.role || 'User'}
                 </p>
               </div>
-              
+
               <div>
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Account Created</h4>
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Account Created
+                </h4>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {new Date(userData?.created_at || user.created_at || '').toLocaleDateString()}
+                  {new Date(
+                    userData?.created_at || user.created_at || ''
+                  ).toLocaleDateString()}
                 </p>
               </div>
             </div>
           </div>
         </div>
-        
+
         {/* User management section (admin only) */}
         {isAdmin && (
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
@@ -90,14 +102,16 @@ async function SettingsPageContent() {
               </p>
               <Button
                 variant="outline"
-                onClick={() => {/* Future implementation */}}
+                onClick={() => {
+                  /* Future implementation */
+                }}
               >
                 Manage Users
               </Button>
             </div>
           </div>
         )}
-        
+
         {/* Dark mode section */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
@@ -107,7 +121,8 @@ async function SettingsPageContent() {
           </div>
           <div className="p-6">
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Your theme preference is currently set to match your system settings.
+              Your theme preference is currently set to match your system
+              settings.
             </p>
             <div className="flex space-x-4">
               <Button
@@ -132,7 +147,9 @@ async function SettingsPageContent() {
                 variant="outline"
                 onClick={() => {
                   localStorage.removeItem('theme');
-                  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  if (
+                    window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
@@ -144,7 +161,7 @@ async function SettingsPageContent() {
             </div>
           </div>
         </div>
-        
+
         {/* Sign out section */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
@@ -158,17 +175,16 @@ async function SettingsPageContent() {
             </p>
             <div className="flex space-x-4">
               <form action={handleSignOut}>
-                <Button
-                  variant="destructive"
-                  type="submit"
-                >
+                <Button variant="destructive" type="submit">
                   Sign Out
                 </Button>
               </form>
-              
+
               <Button
                 variant="outline"
-                onClick={() => {/* Future implementation */}}
+                onClick={() => {
+                  /* Future implementation */
+                }}
               >
                 Change Password
               </Button>
@@ -184,13 +200,15 @@ export default function SettingsPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <PageContainer>
-          <div className="h-96 flex items-center justify-center">
-            <LoadingSpinner size="lg" />
-          </div>
-        </PageContainer>
-      }>
+      <Suspense
+        fallback={
+          <PageContainer>
+            <div className="h-96 flex items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          </PageContainer>
+        }
+      >
         <SettingsPageContent />
       </Suspense>
     </>

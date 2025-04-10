@@ -15,7 +15,7 @@ jest.mock('../../hooks/useSearch', () => ({
 describe('SearchBar Component', () => {
   it('renders correctly with default props', () => {
     render(<SearchBar placeholder="Search customers..." />);
-    
+
     const searchInput = screen.getByPlaceholderText('Search customers...');
     expect(searchInput).toBeInTheDocument();
   });
@@ -23,19 +23,21 @@ describe('SearchBar Component', () => {
   it('allows user to input search term', () => {
     const handleSearchMock = jest.fn();
     const setSearchTermMock = jest.fn();
-    
-    jest.spyOn(React, 'useState').mockImplementation(initial => [initial, setSearchTermMock]);
-    
+
+    jest
+      .spyOn(React, 'useState')
+      .mockImplementation(initial => [initial, setSearchTermMock]);
+
     render(
-      <SearchBar 
-        placeholder="Search customers..." 
+      <SearchBar
+        placeholder="Search customers..."
         onSearch={handleSearchMock}
       />
     );
-    
+
     const searchInput = screen.getByPlaceholderText('Search customers...');
     fireEvent.change(searchInput, { target: { value: 'test search' } });
-    
+
     expect(setSearchTermMock).toHaveBeenCalledWith('test search');
   });
 
@@ -49,7 +51,7 @@ describe('SearchBar Component', () => {
     }));
 
     render(<SearchBar placeholder="Search customers..." />);
-    
+
     const loadingSpinner = screen.getByTestId('search-loading');
     expect(loadingSpinner).toBeInTheDocument();
   });

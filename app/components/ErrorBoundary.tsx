@@ -35,10 +35,7 @@ class ErrorBoundaryComponent extends React.Component<
 
     if (error) {
       return (
-        <Fallback
-          error={error}
-          reset={() => this.setState({ error: null })}
-        />
+        <Fallback error={error} reset={() => this.setState({ error: null })} />
       );
     }
 
@@ -76,9 +73,7 @@ export function DefaultErrorFallback({
       <h2 className="text-lg font-medium text-red-800 mb-2">
         Something went wrong
       </h2>
-      <p className="text-sm text-red-700 mb-4">
-        {getErrorMessage(error)}
-      </p>
+      <p className="text-sm text-red-700 mb-4">{getErrorMessage(error)}</p>
       <button
         onClick={reset}
         className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
@@ -97,7 +92,7 @@ export function useErrorLogger(error: Error | null) {
     if (error) {
       // Log to console in development
       console.error('Error caught by error boundary:', error);
-      
+
       // In production, you would log to an error monitoring service like Sentry
       // Example: if (process.env.NODE_ENV === 'production') { Sentry.captureException(error); }
     }

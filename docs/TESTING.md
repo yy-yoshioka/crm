@@ -57,25 +57,25 @@ import SearchBar from '../ui/SearchBar';
 describe('SearchBar Component', () => {
   it('renders correctly with default props', () => {
     render(<SearchBar placeholder="Search customers..." />);
-    
+
     const searchInput = screen.getByPlaceholderText('Search customers...');
     expect(searchInput).toBeInTheDocument();
   });
 
   it('allows user to input search term', () => {
     const handleSearchMock = jest.fn();
-    
+
     render(
-      <SearchBar 
-        placeholder="Search customers..." 
+      <SearchBar
+        placeholder="Search customers..."
         onSearch={handleSearchMock}
       />
     );
-    
+
     const searchInput = screen.getByPlaceholderText('Search customers...');
     fireEvent.change(searchInput, { target: { value: 'test search' } });
     fireEvent.keyDown(searchInput, { key: 'Enter', code: 'Enter' });
-    
+
     expect(handleSearchMock).toHaveBeenCalledWith('test search');
   });
 });
@@ -97,20 +97,20 @@ describe('Utils', () => {
     it('should call the function after the specified delay', () => {
       const mockFn = jest.fn();
       const debouncedFn = debounce(mockFn, 500);
-      
+
       debouncedFn();
       expect(mockFn).not.toHaveBeenCalled();
-      
+
       jest.advanceTimersByTime(500);
       expect(mockFn).toHaveBeenCalledTimes(1);
     });
   });
-  
+
   describe('formatDate function', () => {
     it('should format a date string correctly', () => {
       const mockDate = new Date('2023-05-15T12:30:45Z');
       const formattedDate = formatDate(mockDate.toISOString());
-      
+
       expect(formattedDate).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/);
     });
   });
@@ -160,8 +160,10 @@ describe('Customers API', () => {
       });
 
       // Create mock request
-      const req = new NextRequest('http://localhost:3000/api/customers?page=1&limit=10');
-      
+      const req = new NextRequest(
+        'http://localhost:3000/api/customers?page=1&limit=10'
+      );
+
       // Call the API function
       const response = await GET(req);
       const responseData = await response.json();

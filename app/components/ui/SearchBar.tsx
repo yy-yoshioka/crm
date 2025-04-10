@@ -55,18 +55,18 @@ export function SearchBar({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
+
   // Get initial query from URL if available
   const urlQuery = searchParams.get(paramName) || '';
   const [query, setQuery] = useState(initialQuery || urlQuery);
-  
+
   // Size classes
   const sizeClasses = {
     sm: 'h-8 text-xs',
     md: 'h-10 text-sm',
     lg: 'h-12 text-base',
   };
-  
+
   // Update query when URL changes
   useEffect(() => {
     const urlQuery = searchParams.get(paramName) || '';
@@ -74,14 +74,14 @@ export function SearchBar({
       setQuery(urlQuery);
     }
   }, [searchParams, paramName, query]);
-  
+
   // Debounced search function
   useEffect(() => {
     const timer = setTimeout(() => {
       if (onSearch) {
         onSearch(query);
       }
-      
+
       if (updateUrl) {
         const params = new URLSearchParams(searchParams);
         if (query) {
@@ -89,26 +89,35 @@ export function SearchBar({
         } else {
           params.delete(paramName);
         }
-        
+
         router.push(`${pathname}?${params.toString()}`);
       }
     }, debounceMs);
-    
+
     return () => clearTimeout(timer);
-  }, [query, debounceMs, onSearch, updateUrl, pathname, router, searchParams, paramName]);
-  
+  }, [
+    query,
+    debounceMs,
+    onSearch,
+    updateUrl,
+    pathname,
+    router,
+    searchParams,
+    paramName,
+  ]);
+
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-  
+
   // Handle key press
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (onSearch) {
         onSearch(query);
       }
-      
+
       if (updateUrl) {
         const params = new URLSearchParams(searchParams);
         if (query) {
@@ -116,19 +125,19 @@ export function SearchBar({
         } else {
           params.delete(paramName);
         }
-        
+
         router.push(`${pathname}?${params.toString()}`);
       }
     }
   };
-  
+
   // Handle clear
   const handleClear = () => {
     setQuery('');
     if (onSearch) {
       onSearch('');
     }
-    
+
     if (updateUrl) {
       const params = new URLSearchParams(searchParams);
       params.delete(paramName);
@@ -137,10 +146,7 @@ export function SearchBar({
   };
 
   return (
-    <div className={cn(
-      'relative w-full',
-      className
-    )}>
+    <div className={cn('relative w-full', className)}>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg
@@ -162,7 +168,7 @@ export function SearchBar({
         <input
           type="search"
           className={cn(
-            "block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+            'block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white',
             sizeClasses[size]
           )}
           placeholder={placeholder}

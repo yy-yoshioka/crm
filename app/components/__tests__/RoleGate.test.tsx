@@ -10,7 +10,7 @@ jest.mock('../../hooks/useRole', () => ({
 
 describe('RoleGate Component', () => {
   const mockUseRole = useRole as jest.Mock;
-  
+
   beforeEach(() => {
     mockUseRole.mockReset();
   });

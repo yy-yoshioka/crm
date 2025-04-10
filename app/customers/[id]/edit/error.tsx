@@ -15,7 +15,7 @@ interface ErrorProps {
 export default function EditCustomerError({ error, reset }: ErrorProps) {
   const params = useParams();
   const customerId = params.id as string;
-  
+
   useEffect(() => {
     // Log the error to an error reporting service
     console.error('Edit customer error:', error);
@@ -34,16 +34,13 @@ export default function EditCustomerError({ error, reset }: ErrorProps) {
               Something went wrong
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We encountered an error while trying to load the customer for editing.
+              We encountered an error while trying to load the customer for
+              editing.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
+              <Button onClick={reset}>Try again</Button>
               <Link href={`/customers/${customerId}`}>
-                <Button variant="outline">
-                  Back to customer
-                </Button>
+                <Button variant="outline">Back to customer</Button>
               </Link>
             </div>
           </div>

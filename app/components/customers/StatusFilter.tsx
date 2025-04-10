@@ -47,20 +47,23 @@ interface StatusFilterProps {
 
 // Define status options with colors
 const statusOptions: StatusOption[] = [
-  { 
-    label: 'Active', 
-    value: 'active', 
-    color: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-900'
+  {
+    label: 'Active',
+    value: 'active',
+    color:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-900',
   },
-  { 
-    label: 'Pending', 
-    value: 'pending', 
-    color: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-900'
+  {
+    label: 'Pending',
+    value: 'pending',
+    color:
+      'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-900',
   },
-  { 
-    label: 'Inactive', 
-    value: 'inactive', 
-    color: 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
+  {
+    label: 'Inactive',
+    value: 'inactive',
+    color:
+      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700',
   },
 ];
 
@@ -82,15 +85,18 @@ export function StatusFilter({
     initialValue: initialStatus,
     onChange: onStatusChange,
   });
-  
+
   // Alignment class
   const alignClass = align === 'center' ? 'justify-center' : 'justify-start';
-  
+
   // Render tabs variant
   if (variant === 'tabs') {
     return (
       <div className="border-b border-gray-200 dark:border-gray-700">
-        <nav className={`flex ${alignClass} space-x-8`} aria-label="Status filter">
+        <nav
+          className={`flex ${alignClass} space-x-8`}
+          aria-label="Status filter"
+        >
           {showAll && (
             <button
               onClick={() => handleChange(null)}
@@ -104,13 +110,18 @@ export function StatusFilter({
               {allLabel}
               {showCounts && (
                 <span className="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
-                  ({Object.values(counts || {}).reduce((sum, count) => sum + count, 0) || 0})
+                  (
+                  {Object.values(counts || {}).reduce(
+                    (sum, count) => sum + count,
+                    0
+                  ) || 0}
+                  )
                 </span>
               )}
             </button>
           )}
-          
-          {statusOptions.map((option) => (
+
+          {statusOptions.map(option => (
             <button
               key={option.value}
               onClick={() => handleChange(option.value)}
@@ -133,7 +144,7 @@ export function StatusFilter({
       </div>
     );
   }
-  
+
   // Render pills variant
   return (
     <div className={`flex ${alignClass} flex-wrap gap-2`}>
@@ -150,13 +161,18 @@ export function StatusFilter({
           {allLabel}
           {showCounts && (
             <span className="ml-2 text-xs">
-              ({Object.values(counts || {}).reduce((sum, count) => sum + count, 0) || 0})
+              (
+              {Object.values(counts || {}).reduce(
+                (sum, count) => sum + count,
+                0
+              ) || 0}
+              )
             </span>
           )}
         </button>
       )}
-      
-      {statusOptions.map((option) => (
+
+      {statusOptions.map(option => (
         <button
           key={option.value}
           onClick={() => handleChange(option.value)}

@@ -15,16 +15,19 @@ This directory contains the database schema for the Customer Management CRM appl
 ### Option 2: Using Migrations (Recommended for Production)
 
 1. Install Supabase CLI (if not already installed)
+
    ```bash
    npm install -g supabase
    ```
 
 2. Initialize Supabase (if not already initialized)
+
    ```bash
    supabase init
    ```
 
 3. Link to your Supabase project
+
    ```bash
    supabase link --project-ref your-project-reference
    ```

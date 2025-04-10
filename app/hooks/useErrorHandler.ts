@@ -24,7 +24,11 @@ export function useErrorHandler() {
       err.error !== null &&
       'message' in err.error
     ) {
-      const apiError = err.error as { message: string; code?: string; details?: Record<string, string[]> };
+      const apiError = err.error as {
+        message: string;
+        code?: string;
+        details?: Record<string, string[]>;
+      };
       setError({
         message: apiError.message,
         code: apiError.code,

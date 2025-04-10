@@ -30,16 +30,13 @@ export default function NewCustomerError({ error, reset }: ErrorProps) {
               Something went wrong
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We encountered an error while trying to load the new customer form.
+              We encountered an error while trying to load the new customer
+              form.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
+              <Button onClick={reset}>Try again</Button>
               <Link href="/customers">
-                <Button variant="outline">
-                  Back to customers
-                </Button>
+                <Button variant="outline">Back to customers</Button>
               </Link>
             </div>
           </div>

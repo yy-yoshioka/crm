@@ -40,53 +40,59 @@ export function useFilter<T extends string>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
+
   // Get initial value from URL or prop
   const valueFromUrl = searchParams.get(paramName || '') as T | null;
   const [value, setValue] = useState<T | null>(valueFromUrl || initialValue);
-  
+
   // Update URL when filter changes
-  const updateSearchParams = useCallback((newValue: T | null) => {
-    if (!updateUrl || !paramName) return;
-    
-    const params = new URLSearchParams(searchParams);
-    
-    if (newValue) {
-      params.set(paramName, newValue);
-    } else {
-      params.delete(paramName);
-    }
-    
-    // Reset page parameter if needed
-    if (resetPage && params.has('page')) {
-      params.set('page', '1');
-    }
-    
-    router.push(`${pathname}?${params.toString()}`);
-  }, [paramName, pathname, resetPage, router, searchParams, updateUrl]);
-  
+  const updateSearchParams = useCallback(
+    (newValue: T | null) => {
+      if (!updateUrl || !paramName) return;
+
+      const params = new URLSearchParams(searchParams);
+
+      if (newValue) {
+        params.set(paramName, newValue);
+      } else {
+        params.delete(paramName);
+      }
+
+      // Reset page parameter if needed
+      if (resetPage && params.has('page')) {
+        params.set('page', '1');
+      }
+
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [paramName, pathname, resetPage, router, searchParams, updateUrl]
+  );
+
   // Handle filter change
-  const handleChange = useCallback((newValue: T | null) => {
-    setValue(newValue);
-    
-    if (onChange) {
-      onChange(newValue);
-    }
-    
-    updateSearchParams(newValue);
-  }, [onChange, updateSearchParams]);
-  
+  const handleChange = useCallback(
+    (newValue: T | null) => {
+      setValue(newValue);
+
+      if (onChange) {
+        onChange(newValue);
+      }
+
+      updateSearchParams(newValue);
+    },
+    [onChange, updateSearchParams]
+  );
+
   // Reset filter
   const reset = useCallback(() => {
     setValue(null);
-    
+
     if (onChange) {
       onChange(null);
     }
-    
+
     updateSearchParams(null);
   }, [onChange, updateSearchParams]);
-  
+
   // Update local state when URL changes
   useEffect(() => {
     if (paramName) {
@@ -96,7 +102,7 @@ export function useFilter<T extends string>({
       }
     }
   }, [searchParams, paramName, value]);
-  
+
   return {
     value,
     handleChange,
@@ -107,7 +113,9 @@ export function useFilter<T extends string>({
 /**
  * Hook specifically for customer status filtering
  */
-export function useStatusFilter(options: Omit<UseFiltersOptions<CustomerStatus>, 'paramName'> = {}) {
+export function useStatusFilter(
+  options: Omit<UseFiltersOptions<CustomerStatus>, 'paramName'> = {}
+) {
   return useFilter<CustomerStatus>({
     ...options,
     paramName: 'status',

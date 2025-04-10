@@ -6,10 +6,21 @@ import { CustomerStatus } from '../database.types';
  * Schema for creating a new customer
  */
 export const createCustomerSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255, 'Name must be less than 255 characters'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name must be less than 255 characters'),
   email: z.string().email('Invalid email address').optional().nullable(),
-  phone: z.string().max(20, 'Phone must be less than 20 characters').optional().nullable(),
-  address: z.string().max(255, 'Address must be less than 255 characters').optional().nullable(),
+  phone: z
+    .string()
+    .max(20, 'Phone must be less than 20 characters')
+    .optional()
+    .nullable(),
+  address: z
+    .string()
+    .max(255, 'Address must be less than 255 characters')
+    .optional()
+    .nullable(),
   status: z.enum(['active', 'inactive', 'pending'] as const).default('pending'),
 });
 
@@ -28,7 +39,9 @@ export const customerSearchSchema = z.object({
   status: z.enum(['active', 'inactive', 'pending'] as const).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
-  sort: z.enum(['name', 'email', 'created_at', 'updated_at', 'status']).default('created_at'),
+  sort: z
+    .enum(['name', 'email', 'created_at', 'updated_at', 'status'])
+    .default('created_at'),
   order: z.enum(['asc', 'desc']).default('desc'),
 });
 

@@ -12,8 +12,12 @@ export const password = z
   .string()
   .min(1, { message: 'Password is required' })
   .min(8, { message: 'Password must be at least 8 characters' })
-  .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
-  .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+  .regex(/[A-Z]/, {
+    message: 'Password must contain at least one uppercase letter',
+  })
+  .regex(/[a-z]/, {
+    message: 'Password must contain at least one lowercase letter',
+  })
   .regex(/[0-9]/, { message: 'Password must contain at least one number' });
 
 export const name = z
@@ -45,7 +49,7 @@ export function makeOptional<T extends z.ZodTypeAny>(schema: T) {
  * Helper to transform empty strings to null
  */
 export function emptyStringToNull<T extends z.ZodTypeAny>(schema: T) {
-  return z.preprocess((val) => {
+  return z.preprocess(val => {
     if (val === '') return null;
     return val;
   }, schema.nullable());
@@ -55,7 +59,7 @@ export function emptyStringToNull<T extends z.ZodTypeAny>(schema: T) {
  * Helper to transform string to Date
  */
 export function stringToDate(dateSchema = z.date()) {
-  return z.preprocess((val) => {
+  return z.preprocess(val => {
     if (typeof val === 'string' || val instanceof Date) return new Date(val);
     return val;
   }, dateSchema);
@@ -65,7 +69,7 @@ export function stringToDate(dateSchema = z.date()) {
  * Helper to transform string to number
  */
 export function stringToNumber(numberSchema = z.number()) {
-  return z.preprocess((val) => {
+  return z.preprocess(val => {
     if (typeof val === 'string') return Number(val);
     return val;
   }, numberSchema);

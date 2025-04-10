@@ -29,10 +29,11 @@ export default function DashboardError({ error, reset }: ErrorProps) {
               There was an error loading the dashboard data.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
-              <Button variant="outline" onClick={() => window.location.href = '/'}>
+              <Button onClick={reset}>Try again</Button>
+              <Button
+                variant="outline"
+                onClick={() => (window.location.href = '/')}
+              >
                 Go to home
               </Button>
             </div>

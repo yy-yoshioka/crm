@@ -17,10 +17,10 @@ interface LoadingSpinnerProps {
   className?: string;
 }
 
-export function LoadingSpinner({ 
-  size = 'md', 
+export function LoadingSpinner({
+  size = 'md',
   color = 'primary',
-  className 
+  className,
 }: LoadingSpinnerProps) {
   // Size mappings
   const sizeClasses = {
@@ -28,21 +28,17 @@ export function LoadingSpinner({
     md: 'h-8 w-8',
     lg: 'h-12 w-12',
   };
-  
+
   // Color mappings
   const colorClasses = {
     primary: 'text-blue-600 dark:text-blue-500',
     white: 'text-white',
   };
-  
+
   return (
     <div className={cn('flex items-center justify-center', className)}>
       <svg
-        className={cn(
-          'animate-spin',
-          sizeClasses[size],
-          colorClasses[color]
-        )}
+        className={cn('animate-spin', sizeClasses[size], colorClasses[color])}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

@@ -115,71 +115,85 @@ export function Table<T>({
 }: TableProps<T>) {
   const [sortField, setSortField] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  
+
   // Function to get cell value
   const getCellValue = (item: T, column: TableColumn<T>) => {
     if (typeof column.accessor === 'function') {
       return column.accessor(item);
     }
-    
+
     const value = item[column.accessor];
-    
+
     if (column.cell) {
       return column.cell(value, item);
     }
-    
+
     return value;
   };
-  
+
   // Sort the data if sortField is set
   const sortedData = useMemo(() => {
     if (!sortField) return data;
-    
+
     return [...data].sort((a, b) => {
       // Skip sorting for function accessors
-      if (typeof columns.find(c => c.accessor === sortField)?.accessor === 'function') {
+      if (
+        typeof columns.find(c => c.accessor === sortField)?.accessor ===
+        'function'
+      ) {
         return 0;
       }
-      
+
       const aValue = a[sortField];
       const bValue = b[sortField];
-      
+
       if (aValue === bValue) return 0;
-      
+
       if (aValue === null || aValue === undefined) return 1;
       if (bValue === null || bValue === undefined) return -1;
-      
+
       // Compare based on type
-      const result = 
-        typeof aValue === 'string' ? aValue.localeCompare(String(bValue)) : 
-        (aValue as number | string | boolean) > (bValue as number | string | boolean) ? 1 : -1;
-      
+      const result =
+        typeof aValue === 'string'
+          ? aValue.localeCompare(String(bValue))
+          : (aValue as number | string | boolean) >
+              (bValue as number | string | boolean)
+            ? 1
+            : -1;
+
       return sortDirection === 'asc' ? result : -result;
     });
   }, [data, sortField, sortDirection, columns]);
-  
+
   // Handle sort toggle
   const handleSort = (columnAccessor: keyof T) => {
     if (typeof columnAccessor === 'function') return;
-    
+
     if (sortField === columnAccessor) {
       // Toggle direction if same field
-      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       // Set new field and reset direction
       setSortField(columnAccessor);
       setSortDirection('asc');
     }
   };
-  
+
   // Get responsive classes for columns
-  const getResponsiveClasses = (responsive?: 'always' | 'sm' | 'md' | 'lg' | 'xl') => {
+  const getResponsiveClasses = (
+    responsive?: 'always' | 'sm' | 'md' | 'lg' | 'xl'
+  ) => {
     switch (responsive) {
-      case 'sm': return 'hidden sm:table-cell';
-      case 'md': return 'hidden md:table-cell';
-      case 'lg': return 'hidden lg:table-cell';
-      case 'xl': return 'hidden xl:table-cell';
-      default: return '';
+      case 'sm':
+        return 'hidden sm:table-cell';
+      case 'md':
+        return 'hidden md:table-cell';
+      case 'lg':
+        return 'hidden lg:table-cell';
+      case 'xl':
+        return 'hidden xl:table-cell';
+      default:
+        return '';
     }
   };
 
@@ -189,10 +203,7 @@ export function Table<T>({
       <div className="space-y-4">
         {/* Regular table view (hidden on mobile) */}
         <div className="hidden sm:block relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-          <table className={cn(
-            'w-full text-sm text-left',
-            className
-          )}>
+          <table className={cn('w-full text-sm text-left', className)}>
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
               <tr>
                 {columns.map((column, index) => (
@@ -202,10 +213,15 @@ export function Table<T>({
                     className={cn(
                       'px-4 py-3 font-medium',
                       getResponsiveClasses(column.responsive),
-                      column.sortable && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+                      column.sortable &&
+                        'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
                       column.className
                     )}
-                    onClick={column.sortable ? () => handleSort(column.accessor as keyof T) : undefined}
+                    onClick={
+                      column.sortable
+                        ? () => handleSort(column.accessor as keyof T)
+                        : undefined
+                    }
                   >
                     <div className="flex items-center space-x-1">
                       <span>{column.header}</span>
@@ -224,14 +240,16 @@ export function Table<T>({
                 )}
               </tr>
             </thead>
-            
+
             <tbody>
               {sortedData.map((item, rowIndex) => (
                 <tr
                   key={keyExtractor(item)}
                   className={cn(
                     'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800',
-                    striped && rowIndex % 2 === 1 && 'bg-gray-50 dark:bg-gray-950',
+                    striped &&
+                      rowIndex % 2 === 1 &&
+                      'bg-gray-50 dark:bg-gray-950',
                     hover && 'hover:bg-gray-100 dark:hover:bg-gray-800',
                     onRowClick && 'cursor-pointer'
                   )}
@@ -250,7 +268,10 @@ export function Table<T>({
                     </td>
                   ))}
                   {rowActions && (
-                    <td className="px-4 py-3 text-right" onClick={e => e.stopPropagation()}>
+                    <td
+                      className="px-4 py-3 text-right"
+                      onClick={e => e.stopPropagation()}
+                    >
                       {rowActions(item)}
                     </td>
                   )}
@@ -259,14 +280,14 @@ export function Table<T>({
             </tbody>
           </table>
         </div>
-        
+
         {/* Card view (visible only on mobile) */}
         <div className="sm:hidden space-y-3">
           {sortedData.map(item => (
-            <div 
+            <div
               key={keyExtractor(item)}
               className={cn(
-                "border rounded-lg p-3 bg-white dark:bg-gray-900 dark:border-gray-800 shadow-sm",
+                'border rounded-lg p-3 bg-white dark:bg-gray-900 dark:border-gray-800 shadow-sm',
                 hover && 'hover:bg-gray-50 dark:hover:bg-gray-800',
                 onRowClick && 'cursor-pointer'
               )}
@@ -283,27 +304,42 @@ export function Table<T>({
                     {getCellValue(item, columns[0])}
                   </div>
                 )}
-                
+
                 {/* Actions if any */}
                 {rowActions && (
-                  <div onClick={e => e.stopPropagation()} className="flex-shrink-0">
+                  <div
+                    onClick={e => e.stopPropagation()}
+                    className="flex-shrink-0"
+                  >
                     {rowActions(item)}
                   </div>
                 )}
               </div>
-              
+
               {/* Secondary columns */}
               <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400 divide-y divide-gray-100 dark:divide-gray-800">
                 {columns
-                  .filter(col => col.isSecondary || (!col.isPrimary && !columns.some(c => c.isPrimary) && columns.indexOf(col) !== 0))
+                  .filter(
+                    col =>
+                      col.isSecondary ||
+                      (!col.isPrimary &&
+                        !columns.some(c => c.isPrimary) &&
+                        columns.indexOf(col) !== 0)
+                  )
                   .slice(0, 4) // Limit to 4 secondary fields on mobile
                   .map((column, idx) => (
-                    <div key={idx} className={`flex flex-col ${idx > 0 ? 'pt-2' : ''}`}>
-                      <span className="font-medium text-gray-500 dark:text-gray-400 text-xs mb-1">{column.header}</span>
-                      <span className="break-words overflow-hidden">{getCellValue(item, column)}</span>
+                    <div
+                      key={idx}
+                      className={`flex flex-col ${idx > 0 ? 'pt-2' : ''}`}
+                    >
+                      <span className="font-medium text-gray-500 dark:text-gray-400 text-xs mb-1">
+                        {column.header}
+                      </span>
+                      <span className="break-words overflow-hidden">
+                        {getCellValue(item, column)}
+                      </span>
                     </div>
-                  ))
-                }
+                  ))}
               </div>
             </div>
           ))}
@@ -315,10 +351,7 @@ export function Table<T>({
   // Standard table view
   return (
     <div className="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-      <table className={cn(
-        'w-full text-sm text-left',
-        className
-      )}>
+      <table className={cn('w-full text-sm text-left', className)}>
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
           <tr>
             {columns.map((column, index) => (
@@ -328,10 +361,15 @@ export function Table<T>({
                 className={cn(
                   'px-4 py-3 font-medium',
                   getResponsiveClasses(column.responsive),
-                  column.sortable && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+                  column.sortable &&
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
                   column.className
                 )}
-                onClick={column.sortable ? () => handleSort(column.accessor as keyof T) : undefined}
+                onClick={
+                  column.sortable
+                    ? () => handleSort(column.accessor as keyof T)
+                    : undefined
+                }
               >
                 <div className="flex items-center space-x-1">
                   <span>{column.header}</span>
@@ -350,7 +388,7 @@ export function Table<T>({
             )}
           </tr>
         </thead>
-        
+
         <tbody>
           {isLoading ? (
             <tr className="bg-white dark:bg-gray-900">
@@ -376,7 +414,9 @@ export function Table<T>({
                 key={keyExtractor(item)}
                 className={cn(
                   'bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800',
-                  striped && rowIndex % 2 === 1 && 'bg-gray-50 dark:bg-gray-950',
+                  striped &&
+                    rowIndex % 2 === 1 &&
+                    'bg-gray-50 dark:bg-gray-950',
                   hover && 'hover:bg-gray-100 dark:hover:bg-gray-800',
                   onRowClick && 'cursor-pointer'
                 )}
@@ -395,7 +435,10 @@ export function Table<T>({
                   </td>
                 ))}
                 {rowActions && (
-                  <td className="px-4 py-3 text-right" onClick={e => e.stopPropagation()}>
+                  <td
+                    className="px-4 py-3 text-right"
+                    onClick={e => e.stopPropagation()}
+                  >
                     {rowActions(item)}
                   </td>
                 )}

@@ -38,8 +38,10 @@ describe('Customers Search API', () => {
       });
 
       // Create mock request with search term
-      const req = new NextRequest('http://localhost:3000/api/customers/search?term=doe');
-      
+      const req = new NextRequest(
+        'http://localhost:3000/api/customers/search?term=doe'
+      );
+
       // Call the API function
       const response = await GET(req);
       const responseData = await response.json();
@@ -47,18 +49,18 @@ describe('Customers Search API', () => {
       // Verify response
       expect(response.status).toBe(200);
       expect(responseData.data).toEqual(mockSearchResults);
-      
+
       // Verify Supabase was called correctly
       expect(mockSupabase.from).toHaveBeenCalledWith('customers');
       expect(mockSupabase.select).toHaveBeenCalled();
       expect(mockSupabase.or).toHaveBeenCalled();
       expect(mockSupabase.limit).toHaveBeenCalled();
     });
-    
+
     it('should return empty array when no search term is provided', async () => {
       // Create mock request without search term
       const req = new NextRequest('http://localhost:3000/api/customers/search');
-      
+
       // Call the API function
       const response = await GET(req);
       const responseData = await response.json();
@@ -66,15 +68,20 @@ describe('Customers Search API', () => {
       // Verify response
       expect(response.status).toBe(200);
       expect(responseData.data).toEqual([]);
-      
+
       // Verify Supabase was NOT called
       expect(supabaseServer.createClient).not.toHaveBeenCalled();
     });
-    
+
     it('should filter search results by status if provided', async () => {
       // Mock search results
       const mockSearchResults = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', status: 'active' },
+        {
+          id: '1',
+          name: 'John Doe',
+          email: 'john@example.com',
+          status: 'active',
+        },
       ];
 
       // Mock the Supabase client
@@ -95,8 +102,10 @@ describe('Customers Search API', () => {
       });
 
       // Create mock request with search term and status
-      const req = new NextRequest('http://localhost:3000/api/customers/search?term=doe&status=active');
-      
+      const req = new NextRequest(
+        'http://localhost:3000/api/customers/search?term=doe&status=active'
+      );
+
       // Call the API function
       const response = await GET(req);
       const responseData = await response.json();
@@ -104,7 +113,7 @@ describe('Customers Search API', () => {
       // Verify response
       expect(response.status).toBe(200);
       expect(responseData.data).toEqual(mockSearchResults);
-      
+
       // Verify filter was applied
       expect(mockSupabase.eq).toHaveBeenCalledWith('status', 'active');
     });

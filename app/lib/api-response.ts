@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { 
-  ValidationError, 
-  AuthenticationError, 
-  AuthorizationError, 
-  NotFoundError, 
-  DatabaseError, 
-  handleApiError 
+import {
+  ValidationError,
+  AuthenticationError,
+  AuthorizationError,
+  NotFoundError,
+  DatabaseError,
+  handleApiError,
 } from '@/app/lib/errors';
 
 /**
@@ -31,7 +31,11 @@ export interface ApiResponse<T> {
 /**
  * Success response with data
  */
-export function successResponse<T>(data: T, status = 200, pagination?: ApiResponse<T>['pagination']) {
+export function successResponse<T>(
+  data: T,
+  status = 200,
+  pagination?: ApiResponse<T>['pagination']
+) {
   return NextResponse.json<ApiResponse<T>>(
     {
       success: true,
@@ -70,8 +74,8 @@ export function errorResponse(
 export function handleValidationError(error: z.ZodError) {
   // Format Zod errors into a more user-friendly format
   const formattedErrors: Record<string, string[]> = {};
-  
-  error.errors.forEach((err) => {
+
+  error.errors.forEach(err => {
     const path = err.path.join('.');
     if (!formattedErrors[path]) {
       formattedErrors[path] = [];
@@ -85,15 +89,18 @@ export function handleValidationError(error: z.ZodError) {
 /**
  * Handle Supabase errors by converting them to our custom error types
  */
-export function handleSupabaseError(error: { message?: string; code?: string }, defaultMessage = 'Database operation failed') {
+export function handleSupabaseError(
+  error: { message?: string; code?: string },
+  defaultMessage = 'Database operation failed'
+) {
   console.error('Supabase error:', error);
-  
+
   // Extract error message
   const message = error.message || defaultMessage;
-  
+
   // Extract error code
   const code = error.code || 'DATABASE_ERROR';
-  
+
   // Map Supabase errors to our custom error types
   if (code === 'PGRST116') {
     // Resource not found error
@@ -101,12 +108,12 @@ export function handleSupabaseError(error: { message?: string; code?: string }, 
   } else if (code === '23505') {
     // Unique constraint violation
     throw new ValidationError(`Duplicate entry: ${message}`, {
-      general: [message]
+      general: [message],
     });
   } else if (code === '23503') {
     // Foreign key constraint violation
     throw new ValidationError(`Invalid reference: ${message}`, {
-      general: [message]
+      general: [message],
     });
   } else if (code === 'PGRST301') {
     // Authentication required
@@ -132,9 +139,11 @@ export function withErrorHandling<Args extends unknown[], T>(
     } catch (error) {
       // Handle Zod validation errors
       if (error instanceof z.ZodError) {
-        return handleApiError(new ValidationError('Validation error', formatZodError(error)));
+        return handleApiError(
+          new ValidationError('Validation error', formatZodError(error))
+        );
       }
-      
+
       // Handle other errors
       return handleApiError(error);
     }
@@ -146,14 +155,14 @@ export function withErrorHandling<Args extends unknown[], T>(
  */
 function formatZodError(error: z.ZodError): Record<string, string[]> {
   const formattedErrors: Record<string, string[]> = {};
-  
-  error.errors.forEach((err) => {
+
+  error.errors.forEach(err => {
     const path = err.path.join('.') || 'general';
     if (!formattedErrors[path]) {
       formattedErrors[path] = [];
     }
     formattedErrors[path].push(err.message);
   });
-  
+
   return formattedErrors;
 }

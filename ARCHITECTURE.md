@@ -24,10 +24,12 @@ Components that need interactivity are marked with `'use client'` directive.
 ### Data Flow
 
 1. **Data Fetching**:
+
    - Server components fetch data directly from Supabase using server-side client
    - Client components use custom hooks that call API endpoints
 
 2. **State Management**:
+
    - React Context for global states (authentication, theming)
    - Local component state for UI interactions
    - Custom hooks for reusable state logic
@@ -104,11 +106,13 @@ customer_managers
 ## Error Handling Strategy
 
 1. **Client-Side Errors**:
+
    - Form validation with immediate feedback
    - Error boundaries for component-level errors
    - Toast notifications for user feedback
 
 2. **Server-Side Errors**:
+
    - Structured error responses from API
    - HTTP status codes for error categorization
    - Detailed validation errors for forms

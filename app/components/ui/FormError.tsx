@@ -31,16 +31,20 @@ type FormErrorsProps = {
 };
 
 export function FormErrors({ errors, className }: FormErrorsProps) {
-  if (!errors || (Array.isArray(errors) && errors.length === 0) || Object.keys(errors).length === 0) {
+  if (
+    !errors ||
+    (Array.isArray(errors) && errors.length === 0) ||
+    Object.keys(errors).length === 0
+  ) {
     return null;
   }
 
   const errorMessages = Array.isArray(errors)
     ? errors
-    : Object.values(errors)
+    : (Object.values(errors)
         .filter(Boolean)
         .flat()
-        .filter(Boolean) as string[];
+        .filter(Boolean) as string[]);
 
   if (errorMessages.length === 0) return null;
 
@@ -89,7 +93,9 @@ export function FormErrors({ errors, className }: FormErrorsProps) {
           <div className="mt-2 text-sm text-red-700 dark:text-red-400">
             <ul className="list-disc pl-5 space-y-1">
               {errorMessages.map((error, index) => (
-                <li key={index} className="break-words">{error}</li>
+                <li key={index} className="break-words">
+                  {error}
+                </li>
               ))}
             </ul>
           </div>
@@ -130,20 +136,25 @@ export function FormField({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
-      
+
       {description && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 line-clamp-2">{description}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 line-clamp-2">
+          {description}
+        </p>
       )}
-      
+
       {React.cloneElement(children as React.ReactElement, {
         id,
         name,
         'aria-invalid': error ? 'true' : 'false',
         'aria-describedby': error ? errorId : undefined,
         'aria-required': required,
-        className: cn('w-full', (children as React.ReactElement).props.className),
+        className: cn(
+          'w-full',
+          (children as React.ReactElement).props.className
+        ),
       })}
-      
+
       <FormError error={error} id={errorId} />
     </div>
   );

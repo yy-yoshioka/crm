@@ -31,7 +31,7 @@ export type OptimisticUpdateOptions<T> = {
 
 /**
  * Hook for performing optimistic updates in UI
- * 
+ *
  * @example
  * ```tsx
  * // Simple usage
@@ -40,7 +40,7 @@ export type OptimisticUpdateOptions<T> = {
  *     await apiClient.updateStatus(id, newStatus);
  *   }
  * });
- * 
+ *
  * // With optimistic UI update and rollback on error
  * const [todos, setTodos] = useState([]);
  * const { isPending, execute } = useOptimisticUpdate({
@@ -56,12 +56,12 @@ export type OptimisticUpdateOptions<T> = {
  *     toast.success('Todo created!');
  *   }
  * });
- * 
+ *
  * const addTodo = (text) => {
  *   // Optimistically update UI before API call
  *   const tempTodo = { id: 'temp-id', text, completed: false };
  *   setTodos([...todos, tempTodo]);
- *   
+ *
  *   // Execute the update with automatic rollback on failure
  *   execute(tempTodo);
  * };
@@ -135,7 +135,7 @@ export function useOptimisticUpdate<T>({
 
 /**
  * Hook for optimistic list operations with automatic rollback
- * 
+ *
  * @example
  * ```tsx
  * // Using the hook with a list of items
@@ -143,13 +143,13 @@ export function useOptimisticUpdate<T>({
  *   { id: 1, text: 'Item 1', completed: false },
  *   { id: 2, text: 'Item 2', completed: true }
  * ]);
- * 
- * const { 
- *   addItem, 
- *   updateItem, 
- *   removeItem, 
- *   pendingItems, 
- *   isPending 
+ *
+ * const {
+ *   addItem,
+ *   updateItem,
+ *   removeItem,
+ *   pendingItems,
+ *   isPending
  * } = useOptimisticList({
  *   items,
  *   setItems,
@@ -161,18 +161,18 @@ export function useOptimisticUpdate<T>({
  *   },
  *   onError: (error) => toast.error(`Operation failed: ${error.message}`)
  * });
- * 
+ *
  * // Add a new item optimistically
  * const handleAdd = () => {
  *   addItem({ text: 'New item', completed: false });
  * };
- * 
+ *
  * // Update an item optimistically
  * const handleToggle = (id) => {
  *   const item = items.find(i => i.id === id);
  *   updateItem(id, { ...item, completed: !item.completed });
  * };
- * 
+ *
  * // Remove an item optimistically
  * const handleDelete = (id) => {
  *   removeItem(id);
@@ -215,7 +215,7 @@ export function useOptimisticList<T extends Record<string, unknown>>({
 
       // Create temporary ID
       const tempId = `temp-${Date.now()}`;
-      
+
       // Create a temporary item with the temp ID
       const tempItem = {
         ...newItem,
@@ -227,10 +227,10 @@ export function useOptimisticList<T extends Record<string, unknown>>({
       const originalItems = [...items];
 
       // Update UI optimistically
-      setItems((current) => [...current, tempItem]);
+      setItems(current => [...current, tempItem]);
 
       // Track this operation
-      setPendingOperations((ops) => [
+      setPendingOperations(ops => [
         ...ops,
         { type: 'add', id: tempId, originalItems },
       ]);
@@ -240,15 +240,15 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         const createdItem = await apis.add(newItem);
 
         // Replace temporary item with real one
-        setItems((current) =>
-          current.map((item) =>
+        setItems(current =>
+          current.map(item =>
             item[idField] === tempId ? { ...createdItem } : item
           )
         );
 
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'add' && op.id === tempId))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'add' && op.id === tempId))
         );
 
         if (onSuccess) {
@@ -258,19 +258,19 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         return createdItem;
       } catch (error) {
         console.error('Error adding item:', error);
-        
+
         // Roll back to original state
         setItems(originalItems);
-        
+
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'add' && op.id === tempId))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'add' && op.id === tempId))
         );
 
         if (onError) {
           onError(error, 'add');
         }
-        
+
         throw error;
       }
     },
@@ -288,8 +288,8 @@ export function useOptimisticList<T extends Record<string, unknown>>({
       const originalItems = [...items];
 
       // Update UI optimistically
-      setItems((current) =>
-        current.map((item) =>
+      setItems(current =>
+        current.map(item =>
           item[idField] === id
             ? { ...item, ...updates, __optimistic: true }
             : item
@@ -297,7 +297,7 @@ export function useOptimisticList<T extends Record<string, unknown>>({
       );
 
       // Track this operation
-      setPendingOperations((ops) => [
+      setPendingOperations(ops => [
         ...ops,
         { type: 'update', id, originalItems },
       ]);
@@ -307,15 +307,15 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         const updatedItem = await apis.update(id, updates);
 
         // Replace optimistic item with real one
-        setItems((current) =>
-          current.map((item) =>
+        setItems(current =>
+          current.map(item =>
             item[idField] === id ? { ...updatedItem } : item
           )
         );
 
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'update' && op.id === id))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'update' && op.id === id))
         );
 
         if (onSuccess) {
@@ -325,19 +325,19 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         return updatedItem;
       } catch (error) {
         console.error(`Error updating item with id ${id}:`, error);
-        
+
         // Roll back to original state
         setItems(originalItems);
-        
+
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'update' && op.id === id))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'update' && op.id === id))
         );
 
         if (onError) {
           onError(error, 'update');
         }
-        
+
         throw error;
       }
     },
@@ -355,10 +355,10 @@ export function useOptimisticList<T extends Record<string, unknown>>({
       const originalItems = [...items];
 
       // Update UI optimistically
-      setItems((current) => current.filter((item) => item[idField] !== id));
+      setItems(current => current.filter(item => item[idField] !== id));
 
       // Track this operation
-      setPendingOperations((ops) => [
+      setPendingOperations(ops => [
         ...ops,
         { type: 'remove', id, originalItems },
       ]);
@@ -368,8 +368,8 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         await apis.remove(id);
 
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'remove' && op.id === id))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'remove' && op.id === id))
         );
 
         if (onSuccess) {
@@ -377,19 +377,19 @@ export function useOptimisticList<T extends Record<string, unknown>>({
         }
       } catch (error) {
         console.error(`Error removing item with id ${id}:`, error);
-        
+
         // Roll back to original state
         setItems(originalItems);
-        
+
         // Remove from pending operations
-        setPendingOperations((ops) =>
-          ops.filter((op) => !(op.type === 'remove' && op.id === id))
+        setPendingOperations(ops =>
+          ops.filter(op => !(op.type === 'remove' && op.id === id))
         );
 
         if (onError) {
           onError(error, 'remove');
         }
-        
+
         throw error;
       }
     },
@@ -397,7 +397,7 @@ export function useOptimisticList<T extends Record<string, unknown>>({
   );
 
   // Identify pending items
-  const pendingItems = items.filter((item) => item.__optimistic);
+  const pendingItems = items.filter(item => item.__optimistic);
   const isPending = pendingOperations.length > 0;
 
   return {

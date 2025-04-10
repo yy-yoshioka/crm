@@ -30,16 +30,13 @@ export default function CustomerDetailError({ error, reset }: ErrorProps) {
               Customer not found
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We couldn&apos;t find the customer you&apos;re looking for. It may have been deleted or you may have entered an invalid ID.
+              We couldn&apos;t find the customer you&apos;re looking for. It may
+              have been deleted or you may have entered an invalid ID.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={reset}>
-                Try again
-              </Button>
+              <Button onClick={reset}>Try again</Button>
               <Link href="/customers">
-                <Button variant="outline">
-                  Back to customers
-                </Button>
+                <Button variant="outline">Back to customers</Button>
               </Link>
             </div>
           </div>

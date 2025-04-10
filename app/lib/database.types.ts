@@ -105,11 +105,15 @@ export type UpdateUser = Database['public']['Tables']['users']['Update'];
 
 export type Customer = Database['public']['Tables']['customers']['Row'];
 export type NewCustomer = Database['public']['Tables']['customers']['Insert'];
-export type UpdateCustomer = Database['public']['Tables']['customers']['Update'];
+export type UpdateCustomer =
+  Database['public']['Tables']['customers']['Update'];
 
-export type CustomerManager = Database['public']['Tables']['customer_managers']['Row'];
-export type NewCustomerManager = Database['public']['Tables']['customer_managers']['Insert'];
-export type UpdateCustomerManager = Database['public']['Tables']['customer_managers']['Update'];
+export type CustomerManager =
+  Database['public']['Tables']['customer_managers']['Row'];
+export type NewCustomerManager =
+  Database['public']['Tables']['customer_managers']['Insert'];
+export type UpdateCustomerManager =
+  Database['public']['Tables']['customer_managers']['Update'];
 
 // Enum types
 export type UserRole = Database['public']['Enums']['user_role'];

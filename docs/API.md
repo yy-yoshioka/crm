@@ -15,11 +15,13 @@ Authentication is handled by Supabase Auth. The application uses JWT tokens for 
 Retrieves a paginated list of customers.
 
 **Query Parameters:**
+
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 10)
 - `status`: Filter by status (optional: 'active', 'inactive', 'pending')
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -42,6 +44,7 @@ Retrieves a paginated list of customers.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 500: Server Error
@@ -51,9 +54,11 @@ Retrieves a paginated list of customers.
 Retrieves a specific customer by ID.
 
 **URL Parameters:**
+
 - `id`: Customer UUID
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -71,6 +76,7 @@ Retrieves a specific customer by ID.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 404: Not Found
@@ -81,6 +87,7 @@ Retrieves a specific customer by ID.
 Creates a new customer.
 
 **Request Body:**
+
 ```json
 {
   "name": "New Customer",
@@ -92,6 +99,7 @@ Creates a new customer.
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -109,6 +117,7 @@ Creates a new customer.
 ```
 
 **Status Codes:**
+
 - 201: Created
 - 400: Bad Request (validation error)
 - 401: Unauthorized
@@ -119,9 +128,11 @@ Creates a new customer.
 Updates an existing customer.
 
 **URL Parameters:**
+
 - `id`: Customer UUID
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated Customer Name",
@@ -131,6 +142,7 @@ Updates an existing customer.
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -148,6 +160,7 @@ Updates an existing customer.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 400: Bad Request (validation error)
 - 401: Unauthorized
@@ -159,9 +172,11 @@ Updates an existing customer.
 Deletes a customer.
 
 **URL Parameters:**
+
 - `id`: Customer UUID
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -169,6 +184,7 @@ Deletes a customer.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 403: Forbidden (insufficient permissions)
@@ -180,11 +196,13 @@ Deletes a customer.
 Searches for customers by name, email, etc.
 
 **Query Parameters:**
+
 - `term`: Search term
 - `status`: Filter by status (optional)
 - `limit`: Maximum results to return (default: 5)
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -199,6 +217,7 @@ Searches for customers by name, email, etc.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 500: Server Error
@@ -210,6 +229,7 @@ Searches for customers by name, email, etc.
 Retrieves the current user's information.
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -222,6 +242,7 @@ Retrieves the current user's information.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 500: Server Error
@@ -231,6 +252,7 @@ Retrieves the current user's information.
 Retrieves the list of available roles.
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -251,6 +273,7 @@ Retrieves the list of available roles.
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 500: Server Error
@@ -260,6 +283,7 @@ Retrieves the list of available roles.
 Retrieves users with their roles (admin only).
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -278,6 +302,7 @@ Retrieves users with their roles (admin only).
 ```
 
 **Status Codes:**
+
 - 200: Success
 - 401: Unauthorized
 - 403: Forbidden (not admin)

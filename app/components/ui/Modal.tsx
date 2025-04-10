@@ -51,7 +51,7 @@ export function Modal({
   preventOutsideClose = false,
 }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  
+
   // Close when pressing Escape
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -59,11 +59,11 @@ export function Modal({
         onClose();
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose, preventOutsideClose]);
-  
+
   // Handle outside click
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (preventOutsideClose) return;
@@ -95,10 +95,10 @@ export function Modal({
         {/* Modal */}
         <div
           className={cn(
-            "w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform transition-all max-h-[95vh] flex flex-col",
+            'w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform transition-all max-h-[95vh] flex flex-col',
             sizeClasses[size]
           )}
-          onClick={(e) => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         >
           {/* Header */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
@@ -136,10 +136,12 @@ export function Modal({
               </Button>
             </div>
           </div>
-          
+
           {/* Content */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 overflow-y-auto flex-grow">{children}</div>
-          
+          <div className="px-4 sm:px-6 py-3 sm:py-4 overflow-y-auto flex-grow">
+            {children}
+          </div>
+
           {/* Footer */}
           {footer && (
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex-shrink-0">

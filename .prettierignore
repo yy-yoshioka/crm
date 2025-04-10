@@ -1,0 +1,26 @@
+# Build artifacts
+.next
+node_modules
+out
+dist
+build
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+public/sw.js
+public/workbox-*.js
+.vercel
+.turbo
+
+# Coverage reports
+coverage
+
+# Debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log* 

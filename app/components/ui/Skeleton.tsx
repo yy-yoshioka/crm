@@ -15,11 +15,11 @@ interface SkeletonProps {
  * @example
  * // Basic usage
  * <Skeleton className="h-8 w-full" />
- * 
+ *
  * // Text skeleton with line breaks
  * <Skeleton variant="text" className="h-4 w-3/4 mb-2" />
  * <Skeleton variant="text" className="h-4 w-1/2" />
- * 
+ *
  * // Card skeleton
  * <div className="border p-4 rounded-md">
  *   <Skeleton variant="rectangular" className="h-32 w-full mb-4" />
@@ -36,14 +36,14 @@ export function Skeleton({
 }: SkeletonProps) {
   // Base styles
   const baseStyles = 'bg-gray-200 dark:bg-gray-700';
-  
+
   // Animation styles
   const animationStyles = {
     pulse: 'animate-pulse',
     wave: 'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/25 before:to-transparent relative overflow-hidden',
     none: '',
   };
-  
+
   // Variant styles
   const variantStyles = {
     rounded: 'rounded-md',
@@ -51,7 +51,7 @@ export function Skeleton({
     text: 'rounded',
     rectangular: '',
   };
-  
+
   return (
     <div
       className={cn(

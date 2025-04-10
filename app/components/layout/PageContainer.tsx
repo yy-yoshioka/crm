@@ -70,22 +70,22 @@ export function PageContainer({
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
+
   // Mount after SSR
   useEffect(() => {
     setMounted(true);
-    
+
     // Add scroll listener for sticky header
     if (stickyHeader) {
       const handleScroll = () => {
         setScrolled(window.scrollY > 10);
       };
-      
+
       window.addEventListener('scroll', handleScroll);
       return () => window.removeEventListener('scroll', handleScroll);
     }
   }, [stickyHeader]);
-  
+
   // Max width classes
   const maxWidthClasses = {
     sm: 'max-w-screen-sm',
@@ -95,7 +95,7 @@ export function PageContainer({
     '2xl': 'max-w-screen-2xl',
     full: 'max-w-full',
   };
-  
+
   // Handle back button click
   const handleBackClick = () => {
     if (backButtonUrl) {
@@ -104,7 +104,7 @@ export function PageContainer({
       router.back();
     }
   };
-  
+
   // Header classes
   const headerClasses = cn(
     'mb-6 sm:mb-8',
@@ -114,11 +114,13 @@ export function PageContainer({
   );
 
   return (
-    <div className={cn(
-      'w-full mx-auto px-4 py-4 sm:py-6 lg:py-8 sm:px-6 lg:px-8',
-      maxWidthClasses[maxWidth],
-      className
-    )}>
+    <div
+      className={cn(
+        'w-full mx-auto px-4 py-4 sm:py-6 lg:py-8 sm:px-6 lg:px-8',
+        maxWidthClasses[maxWidth],
+        className
+      )}
+    >
       {/* Page Header */}
       {(title || description || actions || showBackButton) && (
         <div className={headerClasses}>
@@ -145,7 +147,7 @@ export function PageContainer({
               {backButtonText}
             </button>
           )}
-          
+
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 min-w-0">
               {title && (
@@ -169,9 +171,7 @@ export function PageContainer({
       )}
 
       {/* Page Content */}
-      <main className="w-full">
-        {children}
-      </main>
+      <main className="w-full">{children}</main>
     </div>
   );
 }

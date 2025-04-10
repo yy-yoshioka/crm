@@ -9,7 +9,9 @@ import { UserRole } from './database.types';
  */
 export async function getCurrentUser() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   return user;
 }
 
@@ -19,16 +21,18 @@ export async function getCurrentUser() {
  */
 export async function getCurrentUserRole(): Promise<UserRole | null> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) return null;
-  
+
   const { data, error } = await supabase
     .from('users')
     .select('role')
     .eq('id', user.id)
     .single();
-  
+
   if (error || !data) return null;
   return data.role as UserRole;
 }
@@ -50,17 +54,19 @@ export async function hasRole(requiredRoles: UserRole[]): Promise<boolean> {
  * @param email The user's email
  * @param role The user's role
  */
-export async function createUserWithRole(userId: string, email: string, role: UserRole = 'viewer') {
+export async function createUserWithRole(
+  userId: string,
+  email: string,
+  role: UserRole = 'viewer'
+) {
   const supabase = await createClient();
-  
-  const { error } = await supabase
-    .from('users')
-    .insert({
-      id: userId,
-      email: email,
-      role: role
-    });
-  
+
+  const { error } = await supabase.from('users').insert({
+    id: userId,
+    email: email,
+    role: role,
+  });
+
   if (error) {
     console.error('Error creating user with role:', error);
     throw error;
@@ -74,12 +80,12 @@ export async function createUserWithRole(userId: string, email: string, role: Us
  */
 export async function updateUserRole(userId: string, role: UserRole) {
   const supabase = await createClient();
-  
+
   const { error } = await supabase
     .from('users')
     .update({ role })
     .eq('id', userId);
-  
+
   if (error) {
     console.error('Error updating user role:', error);
     throw error;
@@ -104,11 +110,11 @@ export async function requireAuth() {
 export async function requireRole(requiredRoles: UserRole[]) {
   const user = await requireAuth();
   const hasRequiredRole = await hasRole(requiredRoles);
-  
+
   if (!hasRequiredRole) {
     redirect('/unauthorized');
   }
-  
+
   return user;
 }
 
@@ -134,7 +140,7 @@ export async function handleAuthStateChange(user: User | null) {
         .select()
         .eq('id', user.id)
         .single();
-      
+
       // If user doesn't exist, create a new user record
       if (error || !data) {
         await createUserWithRole(user.id, user.email || '', 'viewer');

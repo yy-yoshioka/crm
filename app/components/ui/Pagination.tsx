@@ -66,7 +66,7 @@ export function Pagination({
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 7; // Total pages to show including first, last, and ellipses
-    
+
     if (totalPages <= maxPagesToShow) {
       // Show all pages if there are few
       for (let i = 0; i < totalPages; i++) {
@@ -75,30 +75,30 @@ export function Pagination({
     } else {
       // Always include first page
       pageNumbers.push(0);
-      
+
       // Calculate range around current page
       const leftBound = Math.max(1, currentPage - 1);
       const rightBound = Math.min(totalPages - 2, currentPage + 1);
-      
+
       // Add ellipsis after first page if needed
       if (leftBound > 1) {
         pageNumbers.push(-1); // Use -1 to represent ellipsis
       }
-      
+
       // Add pages around current page
       for (let i = leftBound; i <= rightBound; i++) {
         pageNumbers.push(i);
       }
-      
+
       // Add ellipsis before last page if needed
       if (rightBound < totalPages - 2) {
         pageNumbers.push(-2); // Use -2 to represent ellipsis
       }
-      
+
       // Always include last page
       pageNumbers.push(totalPages - 1);
     }
-    
+
     return pageNumbers;
   };
 
@@ -120,16 +120,18 @@ export function Pagination({
   const endItem = Math.min(startItem + pageSize - 1, totalItems);
 
   return (
-    <div className={cn(
-      'flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 gap-4',
-      className
-    )}>
+    <div
+      className={cn(
+        'flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 gap-4',
+        className
+      )}
+    >
       <div className="text-sm text-gray-700 dark:text-gray-300">
         Showing <span className="font-medium">{startItem}</span> to{' '}
         <span className="font-medium">{endItem}</span> of{' '}
         <span className="font-medium">{totalItems}</span> results
       </div>
-      
+
       <div className="flex items-center space-x-4">
         {/* Page size selector */}
         {showPageSizeSelector && onPageSizeChange && (
@@ -143,12 +145,12 @@ export function Pagination({
               onChange={handlePageSizeChange}
               options={pageSizeOptions.map(size => ({
                 label: size.toString(),
-                value: size.toString()
+                value: size.toString(),
               }))}
             />
           </div>
         )}
-        
+
         {/* Pagination controls */}
         {totalPages > 1 && (
           <nav className="flex items-center space-x-1">
@@ -176,7 +178,7 @@ export function Pagination({
                 />
               </svg>
             </Button>
-            
+
             {/* Page numbers */}
             {getPageNumbers().map((pageNum, index) => {
               // Render ellipsis
@@ -190,7 +192,7 @@ export function Pagination({
                   </span>
                 );
               }
-              
+
               // Render page button
               return (
                 <Button
@@ -207,7 +209,7 @@ export function Pagination({
                 </Button>
               );
             })}
-            
+
             {/* Next page button */}
             <Button
               variant="outline"

@@ -41,23 +41,23 @@ export default function AuthProvider({
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setIsLoading(true);
-      
+
       if (session?.user) {
         setUser(session.user);
-        
+
         // Fetch user role from database
         const { data } = await supabase
           .from('users')
           .select('role')
           .eq('id', session.user.id)
           .single();
-        
-        setUserRole(data?.role as UserRole || null);
+
+        setUserRole((data?.role as UserRole) || null);
       } else {
         setUser(null);
         setUserRole(null);
       }
-      
+
       setIsLoading(false);
     });
 

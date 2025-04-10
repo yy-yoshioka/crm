@@ -1,6 +1,6 @@
-import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
-import { UserRole } from "../database.types";
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
+import { UserRole } from '../database.types';
 
 // Define route access patterns
 const PUBLIC_ROUTES = ['/login', '/signup', '/auth', '/reset-password', '/'];
@@ -18,8 +18,8 @@ function matchesRoutePattern(pathname: string, patterns: string[]): boolean {
  * Check if the current user role has access to the requested route
  */
 async function checkRoleAccess(
-  supabase: ReturnType<typeof createServerClient>, 
-  user: { id: string }, 
+  supabase: ReturnType<typeof createServerClient>,
+  user: { id: string },
   pathname: string
 ): Promise<boolean> {
   // Public routes are accessible to everyone
@@ -34,7 +34,7 @@ async function checkRoleAccess(
       .select('role')
       .eq('id', user.id)
       .single();
-    
+
     if (error || !data) return false;
     return data.role === 'admin';
   }
@@ -46,7 +46,7 @@ async function checkRoleAccess(
       .select('role')
       .eq('id', user.id)
       .single();
-    
+
     if (error || !data) return false;
     return ['admin', 'manager'].includes(data.role as UserRole);
   }
@@ -94,27 +94,27 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  
+
   // Handle unauthenticated users
   if (!user) {
     // Allow access to public routes
     if (PUBLIC_ROUTES.some(route => pathname.startsWith(route))) {
       return supabaseResponse;
     }
-    
+
     // Redirect to login for non-public routes
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = '/login';
     return NextResponse.redirect(url);
   }
-  
+
   // For authenticated users, check role-based access
   const hasAccess = await checkRoleAccess(supabase, user, pathname);
-  
+
   // Redirect to unauthorized page if access is denied
   if (!hasAccess) {
     const url = request.nextUrl.clone();
-    url.pathname = "/unauthorized";
+    url.pathname = '/unauthorized';
     return NextResponse.redirect(url);
   }
 

@@ -9,6 +9,7 @@ This document provides an overview of the key components in the Customer Managem
 A versatile button component with different variants and sizes.
 
 **Props:**
+
 - `variant`: 'primary' | 'secondary' | 'outline' | 'destructive' | 'link'
 - `size`: 'default' | 'sm' | 'lg'
 - `isLoading`: boolean
@@ -16,6 +17,7 @@ A versatile button component with different variants and sizes.
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <Button variant="primary" size="lg" onClick={handleClick}>
   Click Me
@@ -27,6 +29,7 @@ A versatile button component with different variants and sizes.
 A reusable input component with validation support.
 
 **Props:**
+
 - `id`: string
 - `label`: string
 - `type`: string
@@ -35,13 +38,14 @@ A reusable input component with validation support.
 - Plus standard input attributes
 
 **Usage:**
+
 ```tsx
-<Input 
+<Input
   id="email"
   label="Email Address"
-  type="email" 
-  error={errors.email} 
-  {...register("email")}
+  type="email"
+  error={errors.email}
+  {...register('email')}
 />
 ```
 
@@ -50,6 +54,7 @@ A reusable input component with validation support.
 A dropdown select component.
 
 **Props:**
+
 - `id`: string
 - `label`: string
 - `options`: Array of { value: string, label: string }
@@ -58,16 +63,17 @@ A dropdown select component.
 - Plus standard select attributes
 
 **Usage:**
+
 ```tsx
 <Select
   id="status"
   label="Customer Status"
   options={[
-    { value: "active", label: "Active" },
-    { value: "inactive", label: "Inactive" }
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
   ]}
   error={errors.status}
-  {...register("status")}
+  {...register('status')}
 />
 ```
 
@@ -76,6 +82,7 @@ A dropdown select component.
 A modal dialog component.
 
 **Props:**
+
 - `isOpen`: boolean
 - `onClose`: () => void
 - `title`: string
@@ -83,6 +90,7 @@ A modal dialog component.
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <Modal isOpen={isOpen} onClose={closeModal} title="Customer Details">
   <p>Modal content goes here</p>
@@ -94,13 +102,19 @@ A modal dialog component.
 Notification toast component.
 
 **Props:**
+
 - `message`: string
 - `type`: 'success' | 'error' | 'info'
 - `onClose`: () => void
 
 **Usage:**
+
 ```tsx
-<Toast message="Customer saved successfully!" type="success" onClose={closeToast} />
+<Toast
+  message="Customer saved successfully!"
+  type="success"
+  onClose={closeToast}
+/>
 ```
 
 ### LoadingSpinner
@@ -108,10 +122,12 @@ Notification toast component.
 Loading indicator component.
 
 **Props:**
+
 - `size`: 'sm' | 'md' | 'lg'
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <LoadingSpinner size="md" />
 ```
@@ -121,12 +137,14 @@ Loading indicator component.
 Component for navigating through pages of data.
 
 **Props:**
+
 - `currentPage`: number
 - `totalPages`: number
 - `onPageChange`: (page: number) => void
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <Pagination
   currentPage={currentPage}
@@ -140,16 +158,15 @@ Component for navigating through pages of data.
 Search input component with debounced search.
 
 **Props:**
+
 - `placeholder`: string
 - `onSearch`: (term: string) => void
 - `className`: string
 
 **Usage:**
+
 ```tsx
-<SearchBar
-  placeholder="Search customers..."
-  onSearch={handleSearch}
-/>
+<SearchBar placeholder="Search customers..." onSearch={handleSearch} />
 ```
 
 ## Layout Components
@@ -159,9 +176,11 @@ Search input component with debounced search.
 Navigation bar component with authentication state.
 
 **Props:**
+
 - None (uses AuthContext internally)
 
 **Usage:**
+
 ```tsx
 <Navbar />
 ```
@@ -171,10 +190,12 @@ Navigation bar component with authentication state.
 Standard page container with consistent padding and max-width.
 
 **Props:**
+
 - `children`: React.ReactNode
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <PageContainer>
   <h1>Page Title</h1>
@@ -189,11 +210,13 @@ Standard page container with consistent padding and max-width.
 Form for creating and editing customer records.
 
 **Props:**
+
 - `initialData`: Customer (optional)
 - `onSubmit`: (data: CustomerFormData) => Promise<void>
 - `isSubmitting`: boolean
 
 **Usage:**
+
 ```tsx
 <CustomerForm
   initialData={customer}
@@ -207,6 +230,7 @@ Form for creating and editing customer records.
 Component for displaying a list of customers with pagination.
 
 **Props:**
+
 - `customers`: Customer[]
 - `currentPage`: number
 - `totalPages`: number
@@ -214,6 +238,7 @@ Component for displaying a list of customers with pagination.
 - `onDelete`: (id: string) => void
 
 **Usage:**
+
 ```tsx
 <CustomerList
   customers={customers}
@@ -229,16 +254,15 @@ Component for displaying a list of customers with pagination.
 Card component for displaying customer summary information.
 
 **Props:**
+
 - `customer`: Customer
 - `onDelete`: (id: string) => void
 - `className`: string
 
 **Usage:**
+
 ```tsx
-<CustomerCard
-  customer={customer}
-  onDelete={handleDelete}
-/>
+<CustomerCard customer={customer} onDelete={handleDelete} />
 ```
 
 ### StatusFilter
@@ -246,11 +270,13 @@ Card component for displaying customer summary information.
 Component for filtering customers by status.
 
 **Props:**
+
 - `selectedStatus`: string | null
 - `onStatusChange`: (status: string | null) => void
 - `className`: string
 
 **Usage:**
+
 ```tsx
 <StatusFilter
   selectedStatus={selectedStatus}
@@ -265,10 +291,12 @@ Component for filtering customers by status.
 Component for conditional rendering based on user role.
 
 **Props:**
+
 - `allowedRole`: 'admin' | 'manager' | 'viewer'
 - `children`: React.ReactNode
 
 **Usage:**
+
 ```tsx
 <RoleGate allowedRole="admin">
   <AdminOnlyComponent />
@@ -280,9 +308,11 @@ Component for conditional rendering based on user role.
 Context provider for authentication state.
 
 **Props:**
+
 - `children`: React.ReactNode
 
 **Usage:**
+
 ```tsx
 <AuthProvider>
   <App />

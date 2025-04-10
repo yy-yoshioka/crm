@@ -42,29 +42,29 @@ export function CustomerFilters({
 }: CustomerFiltersProps) {
   const [search, setSearch] = useState(initialSearch);
   const [status, setStatus] = useState<CustomerStatus | null>(initialStatus);
-  
+
   // Update local state when props change
   useEffect(() => {
     setSearch(initialSearch);
   }, [initialSearch]);
-  
+
   useEffect(() => {
     setStatus(initialStatus);
   }, [initialStatus]);
-  
+
   // Handle status filter change
   const handleStatusChange = (value: string) => {
     const newStatus = value ? (value as CustomerStatus) : null;
     setStatus(newStatus);
     onStatusChange(newStatus);
   };
-  
+
   // Handle search query change
   const handleSearchChange = (query: string) => {
     setSearch(query);
     onSearchChange(query);
   };
-  
+
   // Handle clear filters
   const handleClearFilters = () => {
     setSearch('');
@@ -78,7 +78,7 @@ export function CustomerFilters({
     { label: 'All Statuses', value: '' },
     ...statusOptions,
   ];
-  
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -91,7 +91,7 @@ export function CustomerFilters({
             updateUrl={false}
           />
         </div>
-        
+
         <div className="flex flex-row gap-3 sm:gap-4">
           {/* Status filter */}
           <div className="w-full sm:w-auto min-w-[150px]">
@@ -104,7 +104,7 @@ export function CustomerFilters({
               className="h-full"
             />
           </div>
-          
+
           {/* Clear filters button */}
           {(search || status) && (
             <div className="flex-shrink-0">

@@ -15,7 +15,9 @@ interface EditCustomerPageProps {
   };
 }
 
-export async function generateMetadata({ params }: EditCustomerPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: EditCustomerPageProps): Promise<Metadata> {
   const supabase = await createClient();
   const { data: customer } = await supabase
     .from('customers')
@@ -31,34 +33,34 @@ export async function generateMetadata({ params }: EditCustomerPageProps): Promi
 
 async function EditCustomerContent({ id }: { id: string }) {
   const supabase = await createClient();
-  
+
   // Check authentication
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) {
     redirect('/login');
   }
-  
+
   // Fetch customer data
   const { data: customer, error } = await supabase
     .from('customers')
     .select('*')
     .eq('id', id)
     .single();
-  
+
   if (error || !customer) {
     return notFound();
   }
-  
+
   return (
     <PageContainer
       title={`Edit ${customer.name}`}
       description="Update customer information"
       actions={
         <Link href={`/customers/${id}`}>
-          <Button variant="outline">
-            Cancel
-          </Button>
+          <Button variant="outline">Cancel</Button>
         </Link>
       }
     >
@@ -73,13 +75,15 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <PageContainer>
-          <div className="h-96 flex items-center justify-center">
-            <LoadingSpinner size="lg" />
-          </div>
-        </PageContainer>
-      }>
+      <Suspense
+        fallback={
+          <PageContainer>
+            <div className="h-96 flex items-center justify-center">
+              <LoadingSpinner size="lg" />
+            </div>
+          </PageContainer>
+        }
+      >
         <EditCustomerContent id={params.id} />
       </Suspense>
     </>
