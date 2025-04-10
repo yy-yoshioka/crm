@@ -93,7 +93,7 @@
   - **Step Dependencies**: Step 2
 
 ## Core UI Components
-- [ ] Step 4: Implement Reusable UI Components (Part 1)
+- [x] Step 4: Implement Reusable UI Components (Part 1)
   - **Task**: Create basic UI components needed across the application
   - **Files**:
     - app/components/ui/Button.tsx: Reusable button component
@@ -104,7 +104,7 @@
     - app/components/ui/LoadingSpinner.tsx: Loading indicator
   - **Step Dependencies**: None
 
-- [ ] Step 5: Implement Reusable UI Components (Part 2)
+- [x] Step 5: Implement Reusable UI Components (Part 2)
   - **Task**: Create layout and data display components
   - **Files**:
     - app/components/layout/Navbar.tsx: Navigation bar component
