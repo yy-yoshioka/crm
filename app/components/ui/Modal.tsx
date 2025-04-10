@@ -72,12 +72,12 @@ export function Modal({
     }
   };
 
-  // Size class mapping
+  // Size class mapping with improved responsive sizes
   const sizeClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    full: 'max-w-4xl',
+    sm: 'max-w-[90%] sm:max-w-sm',
+    md: 'max-w-[95%] sm:max-w-md',
+    lg: 'max-w-[98%] sm:max-w-lg md:max-w-xl',
+    full: 'max-w-[98%] sm:max-w-xl md:max-w-2xl lg:max-w-4xl',
   };
 
   // Don't render anything if the modal is closed
@@ -89,26 +89,26 @@ export function Modal({
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+        className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 overflow-y-auto"
         onClick={handleOverlayClick}
       >
         {/* Modal */}
         <div
           className={cn(
-            "w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform transition-all",
+            "w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transform transition-all max-h-[95vh] flex flex-col",
             sizeClasses[size]
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
             <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <div className="mr-8">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 break-words">
                   {title}
                 </h2>
                 {description && (
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                     {description}
                   </p>
                 )}
@@ -117,7 +117,7 @@ export function Modal({
                 onClick={onClose}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full"
+                className="h-8 w-8 rounded-full flex-shrink-0"
                 aria-label="Close"
               >
                 <svg
@@ -138,11 +138,11 @@ export function Modal({
           </div>
           
           {/* Content */}
-          <div className="px-6 py-4">{children}</div>
+          <div className="px-4 sm:px-6 py-3 sm:py-4 overflow-y-auto flex-grow">{children}</div>
           
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex-shrink-0">
               {footer}
             </div>
           )}

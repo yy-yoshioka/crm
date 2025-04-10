@@ -63,82 +63,89 @@ export function CustomerForm({ customer, onCancel }: CustomerFormProps) {
         e.preventDefault();
         handleSubmit();
       }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
       {/* General error messages */}
       <FormErrors errors={formattedErrors} />
       
-      {/* Name field */}
-      <FormField
-        name="name"
-        label="Name"
-        error={errors.name}
-        required
-      >
-        <Input
-          value={formData.name}
-          onChange={(e) => handleChange('name', e.target.value)}
-        />
-      </FormField>
-      
-      {/* Email field */}
-      <FormField
-        name="email"
-        label="Email"
-        error={errors.email}
-        description="We'll never share your email with anyone else."
-      >
-        <Input
-          type="email"
-          value={formData.email || ''}
-          onChange={(e) => handleChange('email', e.target.value)}
-        />
-      </FormField>
-      
-      {/* Phone field */}
-      <FormField
-        name="phone"
-        label="Phone"
-        error={errors.phone}
-      >
-        <Input
-          value={formData.phone || ''}
-          onChange={(e) => handleChange('phone', e.target.value)}
-        />
-      </FormField>
-      
-      {/* Address field */}
-      <FormField
-        name="address"
-        label="Address"
-        error={errors.address}
-      >
-        <Input
-          value={formData.address || ''}
-          onChange={(e) => handleChange('address', e.target.value)}
-        />
-      </FormField>
-      
-      {/* Status field */}
-      <FormField
-        name="status"
-        label="Status"
-        error={errors.status}
-      >
-        <Select
-          value={formData.status}
-          options={statusOptions}
-          onChange={(value) => handleChange('status', value)}
-        />
-      </FormField>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="space-y-4 sm:space-y-6">
+          {/* Name field */}
+          <FormField
+            name="name"
+            label="Name"
+            error={errors.name}
+            required
+          >
+            <Input
+              value={formData.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+            />
+          </FormField>
+          
+          {/* Email field */}
+          <FormField
+            name="email"
+            label="Email"
+            error={errors.email}
+            description="We'll never share your email with anyone else."
+          >
+            <Input
+              type="email"
+              value={formData.email || ''}
+              onChange={(e) => handleChange('email', e.target.value)}
+            />
+          </FormField>
+          
+          {/* Phone field */}
+          <FormField
+            name="phone"
+            label="Phone"
+            error={errors.phone}
+          >
+            <Input
+              value={formData.phone || ''}
+              onChange={(e) => handleChange('phone', e.target.value)}
+            />
+          </FormField>
+        </div>
+        
+        <div className="space-y-4 sm:space-y-6">
+          {/* Address field */}
+          <FormField
+            name="address"
+            label="Address"
+            error={errors.address}
+          >
+            <Input
+              value={formData.address || ''}
+              onChange={(e) => handleChange('address', e.target.value)}
+            />
+          </FormField>
+          
+          {/* Status field */}
+          <FormField
+            name="status"
+            label="Status"
+            error={errors.status}
+          >
+            <Select
+              value={formData.status}
+              options={statusOptions}
+              onChange={(value) => handleChange('status', value)}
+            />
+          </FormField>
+        </div>
+      </div>
       
       {/* Form actions */}
-      <div className="flex justify-end space-x-4 pt-4">
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4 pt-4 mt-6">
         <Button
           type="button"
           variant="outline"
           onClick={handleCancel}
           disabled={isSubmitting}
+          className="w-full sm:w-auto order-2 sm:order-1"
         >
           Cancel
         </Button>
@@ -146,6 +153,7 @@ export function CustomerForm({ customer, onCancel }: CustomerFormProps) {
           type="submit"
           isLoading={isSubmitting}
           disabled={isSubmitting}
+          className="w-full sm:w-auto order-1 sm:order-2"
         >
           {customer ? 'Update Customer' : 'Create Customer'}
         </Button>

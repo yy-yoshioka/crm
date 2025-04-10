@@ -105,20 +105,27 @@ export function CustomerList({
       header: 'Name',
       accessor: 'name',
       className: 'font-medium',
+      isPrimary: true, // Primary column for mobile card view
+      sortable: true,
     },
     {
       header: 'Email',
       accessor: 'email',
       cell: (value) => value || '-',
+      responsive: 'md', // Hide on small screens
+      isSecondary: true, // Show in mobile card view
     },
     {
       header: 'Phone',
       accessor: 'phone',
       cell: (value) => value || '-',
+      responsive: 'lg', // Hide on medium and smaller screens
+      isSecondary: true, // Show in mobile card view
     },
     {
       header: 'Status',
       accessor: 'status',
+      isSecondary: true, // Show in mobile card view
       cell: (value, item) => {
         const statusStyles: Record<CustomerStatus, string> = {
           active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -143,75 +150,7 @@ export function CustomerList({
       header: 'Created',
       accessor: 'created_at',
       cell: (value) => new Date(value as string).toLocaleDateString(),
-    },
-    {
-      header: 'Actions',
-      accessor: 'id',
-      cell: (_, item) => {
-        const statusDropdownOptions = [
-          { label: 'Active', value: 'active' as const, current: item.status === 'active' },
-          { label: 'Inactive', value: 'inactive' as const, current: item.status === 'inactive' },
-          { label: 'Pending', value: 'pending' as const, current: item.status === 'pending' },
-        ];
-        
-        return (
-          <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
-            {/* Status dropdown */}
-            <div className="relative group">
-              <button
-                type="button"
-                className="px-2 py-1 text-xs rounded border border-gray-300 hover:bg-gray-100"
-                aria-haspopup="true"
-              >
-                Status
-              </button>
-              
-              <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded shadow-lg hidden group-hover:block z-10">
-                <div className="py-1">
-                  {statusDropdownOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        option.current ? 'bg-gray-100 font-medium' : 'hover:bg-gray-50'
-                      }`}
-                      onClick={(e) => handleStatusChange(e, item, option.value)}
-                      disabled={option.current || isDeleting}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            {/* Edit button */}
-            <button
-              type="button"
-              className="p-1 text-blue-600 hover:text-blue-800"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/customers/${item.id}/edit`);
-              }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-            </button>
-            
-            {/* Delete button */}
-            <button
-              type="button"
-              className="p-1 text-red-600 hover:text-red-800"
-              onClick={(e) => handleDeleteClick(e, item)}
-              disabled={isDeleting}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          </div>
-        );
-      },
+      responsive: 'lg', // Hide on medium and smaller screens
     },
   ];
   
@@ -251,32 +190,34 @@ export function CustomerList({
         </div>
       </Modal>
     
-      <div className="flex justify-between items-start">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Customers</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Customers</h2>
         
         {/* View mode toggle */}
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 self-end sm:self-auto">
           <Button
             variant={viewMode === 'table' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('table')}
             aria-label="Table view"
+            className="rounded-md"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18M3 18h18M3 6h18" />
             </svg>
-            <span className="ml-1">Table</span>
+            <span className="ml-1 hidden sm:inline">Table</span>
           </Button>
           <Button
             variant={viewMode === 'grid' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('grid')}
             aria-label="Grid view"
+            className="rounded-md"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
-            <span className="ml-1">Grid</span>
+            <span className="ml-1 hidden sm:inline">Grid</span>
           </Button>
         </div>
       </div>
@@ -334,7 +275,7 @@ export function CustomerList({
               striped
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
               {customers.map((customer) => (
                 <CustomerCard
                   key={customer.id}

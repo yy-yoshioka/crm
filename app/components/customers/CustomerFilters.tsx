@@ -81,7 +81,7 @@ export function CustomerFilters({
   
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         {/* Search bar */}
         <div className="flex-1">
           <SearchBar
@@ -92,29 +92,34 @@ export function CustomerFilters({
           />
         </div>
         
-        {/* Status filter */}
-        <div className="w-full md:w-48">
-          <Select
-            options={allStatusOptions}
-            value={status || ''}
-            onChange={handleStatusChange}
-            placeholder="Filter by status"
-            disabled={isLoading}
-          />
-        </div>
-        
-        {/* Clear filters button */}
-        {(search || status) && (
-          <div>
-            <Button
-              variant="outline"
-              onClick={handleClearFilters}
+        <div className="flex flex-row gap-3 sm:gap-4">
+          {/* Status filter */}
+          <div className="w-full sm:w-auto min-w-[150px]">
+            <Select
+              options={allStatusOptions}
+              value={status || ''}
+              onChange={handleStatusChange}
+              placeholder="Filter by status"
               disabled={isLoading}
-            >
-              Clear Filters
-            </Button>
+              className="h-full"
+            />
           </div>
-        )}
+          
+          {/* Clear filters button */}
+          {(search || status) && (
+            <div className="flex-shrink-0">
+              <Button
+                variant="outline"
+                onClick={handleClearFilters}
+                disabled={isLoading}
+                size="default"
+                className="h-full w-full sm:w-auto whitespace-nowrap"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
