@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { createClient } from '@/app/lib/supabase/client';
-import { CustomerStatus } from '@/app/lib/database.types';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { CustomerStatus } from '@/app/lib/database.types';
+import { useOptimisticList } from '@/app/hooks/useOptimisticUpdate';
+import { useToast } from '@/app/hooks/useToast';
 
 interface CustomerListParams {
   page?: number;
@@ -14,7 +15,7 @@ interface CustomerListParams {
   order?: 'asc' | 'desc';
 }
 
-interface Customer {
+export interface Customer {
   id: string;
   name: string;
   email: string | null;
@@ -24,11 +25,13 @@ interface Customer {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  __optimistic?: boolean;
 }
 
 interface UseCustomersReturn {
   customers: Customer[];
   isLoading: boolean;
+  isDeleting: boolean;
   error: string | null;
   totalCount: number;
   currentPage: number;
@@ -44,6 +47,8 @@ interface UseCustomersReturn {
   sortField: string;
   sortOrder: 'asc' | 'desc';
   refreshData: () => Promise<void>;
+  deleteCustomer: (id: string) => Promise<void>;
+  updateCustomerStatus: (id: string, status: CustomerStatus) => Promise<void>;
 }
 
 /**
@@ -54,6 +59,7 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { addToast } = useToast();
   
   // Parse URL parameters or use defaults
   const initPage = searchParams.get('page') 
@@ -80,9 +86,6 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
   const [searchQuery, setSearchQuery] = useState(initSearch);
   const [sortField, setSortField] = useState(initSort);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(initOrder);
-  
-  // Supabase client - not used currently as we're using fetch API
-  // const supabase = createClient();
   
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -115,8 +118,6 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
     setError(null);
     
     try {
-      // Calculate pagination offset (handled by API)
-      
       // Build query parameters
       const params = new URLSearchParams();
       params.set('page', currentPage.toString());
@@ -160,6 +161,94 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
       setIsLoading(false);
     }
   }, [currentPage, pageSize, selectedStatus, searchQuery, sortField, sortOrder]);
+  
+  // Setup optimistic list operations
+  const { 
+    removeItem: optimisticDeleteCustomer,
+    updateItem: optimisticUpdateCustomer,
+    isPending: isUpdatingOptimistically 
+  } = useOptimisticList({
+    items: customers,
+    setItems: setCustomers,
+    idField: 'id',
+    apis: {
+      remove: async (id) => {
+        const response = await fetch(`/api/customers/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || 'Failed to delete customer');
+        }
+      },
+      update: async (id, updates) => {
+        const response = await fetch(`/api/customers/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updates),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || 'Failed to update customer');
+        }
+        
+        const data = await response.json();
+        return data.data;
+      },
+    },
+    onSuccess: (operation, updatedItem) => {
+      if (operation === 'remove') {
+        addToast({
+          title: 'Customer deleted',
+          description: 'The customer was successfully deleted.',
+          type: 'success',
+        });
+        // Update total count
+        setTotalCount(prev => Math.max(0, prev - 1));
+      } else if (operation === 'update') {
+        addToast({
+          title: 'Customer updated',
+          description: 'The customer was successfully updated.',
+          type: 'success',
+        });
+      }
+    },
+    onError: (error, operation) => {
+      addToast({
+        title: 'Error',
+        description: 
+          operation === 'remove' 
+            ? 'Failed to delete customer. Please try again.' 
+            : 'Failed to update customer. Please try again.',
+        type: 'error',
+      });
+    },
+  });
+  
+  // Delete a customer with optimistic update
+  const deleteCustomer = useCallback(async (id: string) => {
+    try {
+      await optimisticDeleteCustomer(id);
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+    }
+  }, [optimisticDeleteCustomer]);
+  
+  // Update a customer status with optimistic update
+  const updateCustomerStatus = useCallback(async (id: string, status: CustomerStatus) => {
+    try {
+      await optimisticUpdateCustomer(id, { status });
+    } catch (error) {
+      console.error('Error updating customer status:', error);
+    }
+  }, [optimisticUpdateCustomer]);
   
   // Fetch data when dependencies change
   useEffect(() => {
@@ -220,6 +309,7 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
   return {
     customers,
     isLoading,
+    isDeleting: isUpdatingOptimistically,
     error,
     totalCount,
     currentPage,
@@ -235,5 +325,7 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
     sortField,
     sortOrder,
     refreshData,
+    deleteCustomer,
+    updateCustomerStatus,
   };
 }

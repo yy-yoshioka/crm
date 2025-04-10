@@ -29,9 +29,25 @@ interface CustomerCardProps {
    */
   createdAt: string;
   /**
+   * Whether this is an optimistic update
+   */
+  isOptimistic?: boolean;
+  /**
    * On click handler
    */
   onClick?: () => void;
+  /**
+   * On delete click handler
+   */
+  onDeleteClick?: (e: React.MouseEvent) => void;
+  /**
+   * On edit click handler
+   */
+  onEditClick?: (e: React.MouseEvent) => void;
+  /**
+   * Whether delete is in progress
+   */
+  isDeleting?: boolean;
 }
 
 /**
@@ -44,7 +60,11 @@ export function CustomerCard({
   phone,
   status,
   createdAt,
+  isOptimistic = false,
   onClick,
+  onDeleteClick,
+  onEditClick,
+  isDeleting = false,
 }: CustomerCardProps) {
   // Format date for display
   const formattedDate = new Date(createdAt).toLocaleDateString();
@@ -55,6 +75,11 @@ export function CustomerCard({
     inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
     pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
   };
+  
+  // Apply animation for optimistic updates
+  const cardClasses = `border rounded-lg overflow-hidden shadow-sm hover:shadow transition-shadow duration-200 bg-white dark:bg-gray-800 dark:border-gray-700 ${
+    isOptimistic ? 'animate-pulse opacity-80' : ''
+  }`;
   
   return (
     <Link
@@ -67,7 +92,7 @@ export function CustomerCard({
         }
       }}
     >
-      <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow transition-shadow duration-200 bg-white dark:bg-gray-800 dark:border-gray-700">
+      <div className={cardClasses}>
         <div className="p-5">
           <div className="flex justify-between items-start mb-2">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -106,7 +131,44 @@ export function CustomerCard({
           </div>
         </div>
         
-        <div className="bg-gray-50 dark:bg-gray-900 px-5 py-3 text-right">
+        <div className="bg-gray-50 dark:bg-gray-900 px-5 py-3 flex justify-between items-center">
+          {/* Action buttons */}
+          <div className="flex items-center space-x-2">
+            {onEditClick && (
+              <button
+                type="button"
+                className="p-1 text-blue-600 hover:text-blue-800"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEditClick(e);
+                }}
+                disabled={isDeleting}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+            )}
+            
+            {onDeleteClick && (
+              <button
+                type="button"
+                className="p-1 text-red-600 hover:text-red-800"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDeleteClick(e);
+                }}
+                disabled={isDeleting}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            )}
+          </div>
+          
           <span className="text-xs font-medium text-blue-600 dark:text-blue-400 group-hover:underline">
             View Details →
           </span>

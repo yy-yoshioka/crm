@@ -234,11 +234,14 @@
   - **Step Dependencies**: Step 8
 
 ## Final Touches and Optimization
-- [ ] Step 20: Implement Loading States and Optimistic Updates
+- [x] Step 20: Implement Loading States and Optimistic Updates
   - **Task**: Add loading indicators and optimistic UI updates for better UX
   - **Files**:
     - app/hooks/useOptimisticUpdate.ts: Hook for optimistic updates
     - app/components/ui/Skeleton.tsx: Skeleton loading component
+    - app/hooks/useCustomers.ts: Updated with optimistic delete functionality
+    - app/components/customers/CustomerList.tsx: Updated with optimistic UI
+    - app/components/customers/CustomerCard.tsx: Updated with optimistic UI
   - **Step Dependencies**: Step 9, Step 11, Step 12, Step 14
 
 - [ ] Step 21: Add Responsive Design Improvements
