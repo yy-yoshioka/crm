@@ -115,7 +115,7 @@
   - **Step Dependencies**: Step 4
 
 ## API Implementation
-- [ ] Step 6: Implement Customer API Endpoints
+- [x] Step 6: Implement Customer API Endpoints
   - **Task**: Create server-side API routes for customer CRUD operations
   - **Files**:
     - app/api/customers/route.ts: GET and POST endpoints for customers
@@ -124,7 +124,7 @@
     - app/lib/validations/customer.ts: Validation schemas for customer data
   - **Step Dependencies**: Step 1, Step 2
 
-- [ ] Step 7: Implement User and Role API Endpoints
+- [x] Step 7: Implement User and Role API Endpoints
   - **Task**: Create API routes for user management and role information
   - **Files**:
     - app/api/user/route.ts: Endpoint for current user information
