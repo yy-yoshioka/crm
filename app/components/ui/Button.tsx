@@ -100,7 +100,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           iconPosition,
           className 
         }))}
-        ref={ref as any}
+        ref={ref}
         disabled={isLoading || disabled}
         {...linkProps}
         {...props}

@@ -3,7 +3,6 @@
 import { useState, useEffect, ChangeEvent, KeyboardEvent } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/app/lib/utils';
-import { Button } from './Button';
 
 interface SearchBarProps {
   /**
@@ -74,7 +73,7 @@ export function SearchBar({
     if (urlQuery !== query) {
       setQuery(urlQuery);
     }
-  }, [searchParams, paramName]);
+  }, [searchParams, paramName, query]);
   
   // Debounced search function
   useEffect(() => {

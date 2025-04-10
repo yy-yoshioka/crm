@@ -19,7 +19,7 @@ export interface TableColumn<T> {
   /**
    * Cell renderer function (optional)
    */
-  cell?: (value: any, row: T) => ReactNode;
+  cell?: (value: unknown, row: T) => ReactNode;
   /**
    * Optional CSS classes for the column
    */
@@ -152,7 +152,7 @@ export function Table<T>({
       // Compare based on type
       const result = 
         typeof aValue === 'string' ? aValue.localeCompare(String(bValue)) : 
-        (aValue as any) > (bValue as any) ? 1 : -1;
+        (aValue as number | string | boolean) > (bValue as number | string | boolean) ? 1 : -1;
       
       return sortDirection === 'asc' ? result : -result;
     });

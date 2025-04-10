@@ -26,7 +26,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '10', 10);
-  const status = searchParams.get('status') as any;
+  const status = searchParams.get('status') as string | null;
   const sort = searchParams.get('sort') || 'created_at';
   const order = searchParams.get('order') || 'desc';
   

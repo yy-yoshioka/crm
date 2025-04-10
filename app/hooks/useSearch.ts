@@ -62,19 +62,20 @@ export default function useSearch({
   }, [paramName, pathname, router, searchParams, updateUrl]);
   
   // Create debounced version of search handler
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setDebouncedQuery(value);
+  const debouncedSearch = useCallback((value: string) => {
+    const debouncedFn = debounce((searchValue: string) => {
+      setDebouncedQuery(searchValue);
       setIsSearching(false);
       
       if (onSearch) {
-        onSearch(value);
+        onSearch(searchValue);
       }
       
-      updateSearchParams(value);
-    }, debounceMs),
-    [debounceMs, onSearch, updateSearchParams]
-  );
+      updateSearchParams(searchValue);
+    }, debounceMs);
+    
+    debouncedFn(value);
+  }, [debounceMs, onSearch, updateSearchParams, setDebouncedQuery, setIsSearching]);
   
   // Handle search query changes
   const handleSearch = useCallback((value: string) => {

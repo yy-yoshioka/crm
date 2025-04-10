@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setTimeout(() => {
       removeToast(id);
     }, duration);
-  }, []);
+  }, [removeToast]);
 
   // Remove a toast by ID
   const removeToast = useCallback((id: string) => {

@@ -19,7 +19,7 @@ function matchesRoutePattern(pathname: string, patterns: string[]): boolean {
  */
 async function checkRoleAccess(
   supabase: ReturnType<typeof createServerClient>, 
-  user: any, 
+  user: { id: string }, 
   pathname: string
 ): Promise<boolean> {
   // Public routes are accessible to everyone
@@ -69,7 +69,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({

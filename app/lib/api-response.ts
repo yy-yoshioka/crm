@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { 
-  AppError, 
   ValidationError, 
   AuthenticationError, 
   AuthorizationError, 
@@ -19,7 +18,7 @@ export interface ApiResponse<T> {
   error?: {
     message: string;
     code?: string;
-    details?: any;
+    details?: unknown;
   };
   pagination?: {
     total: number;
@@ -50,7 +49,7 @@ export function errorResponse(
   message: string,
   status = 400,
   code?: string,
-  details?: any
+  details?: unknown
 ) {
   return NextResponse.json<ApiResponse<null>>(
     {
@@ -86,7 +85,7 @@ export function handleValidationError(error: z.ZodError) {
 /**
  * Handle Supabase errors by converting them to our custom error types
  */
-export function handleSupabaseError(error: any, defaultMessage = 'Database operation failed') {
+export function handleSupabaseError(error: { message?: string; code?: string }, defaultMessage = 'Database operation failed') {
   console.error('Supabase error:', error);
   
   // Extract error message
@@ -124,7 +123,7 @@ export function handleSupabaseError(error: any, defaultMessage = 'Database opera
 /**
  * Wrap a route handler with error handling
  */
-export function withErrorHandling<Args extends any[], T>(
+export function withErrorHandling<Args extends unknown[], T>(
   handler: (...args: Args) => Promise<T>
 ) {
   return async (...args: Args) => {

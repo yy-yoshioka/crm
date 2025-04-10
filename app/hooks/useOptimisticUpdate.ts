@@ -179,7 +179,7 @@ export function useOptimisticUpdate<T>({
  * };
  * ```
  */
-export function useOptimisticList<T extends Record<string, any>>({
+export function useOptimisticList<T extends Record<string, unknown>>({
   items,
   setItems,
   idField = 'id',
@@ -274,7 +274,7 @@ export function useOptimisticList<T extends Record<string, any>>({
         throw error;
       }
     },
-    [items, idField, apis.add, setItems, onSuccess, onError]
+    [items, idField, apis, setItems, onSuccess, onError]
   );
 
   // Update an item optimistically
@@ -341,7 +341,7 @@ export function useOptimisticList<T extends Record<string, any>>({
         throw error;
       }
     },
-    [items, idField, apis.update, setItems, onSuccess, onError]
+    [items, idField, apis, setItems, onSuccess, onError]
   );
 
   // Remove an item optimistically
@@ -393,7 +393,7 @@ export function useOptimisticList<T extends Record<string, any>>({
         throw error;
       }
     },
-    [items, idField, apis.remove, setItems, onSuccess, onError]
+    [items, idField, apis, setItems, onSuccess, onError]
   );
 
   // Identify pending items

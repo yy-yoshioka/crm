@@ -6,9 +6,9 @@ export default function UnauthorizedPage() {
       <div className="max-w-md w-full space-y-8 text-center">
         <div>
           <h1 className="text-4xl font-bold text-red-600">Access Denied</h1>
-          <h2 className="mt-6 text-2xl font-medium">You don't have permission to access this page</h2>
+          <h2 className="mt-6 text-2xl font-medium">You don&apos;t have permission to access this page</h2>
           <p className="mt-2 text-gray-600">
-            Your account doesn't have the required permissions to view this resource.
+            Your account doesn&apos;t have the required permissions to view this resource.
           </p>
         </div>
         <div className="mt-8 space-y-4">

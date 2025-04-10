@@ -203,6 +203,7 @@ export default function useCustomers(initialParams?: CustomerListParams): UseCus
         return data.data;
       },
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (operation, updatedItem) => {
       if (operation === 'remove') {
         addToast({

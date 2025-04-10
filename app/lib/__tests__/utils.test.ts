@@ -68,7 +68,7 @@ describe('Utils', () => {
     });
     
     it('should filter out falsy values', () => {
-      const result = cn('base-class', false && 'conditional-class', '' as any, null as any, undefined as any);
+      const result = cn('base-class', false && 'conditional-class', '' as string, null as unknown as string, undefined as unknown as string);
       expect(result).toBe('base-class');
     });
     

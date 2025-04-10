@@ -127,7 +127,7 @@ export function SearchResults({
   if (results.length === 0) {
     return (
       <div className="text-center p-8 bg-gray-50 rounded-lg dark:bg-gray-900">
-        <p className="text-gray-600 dark:text-gray-400">No customers found for "{query}"</p>
+        <p className="text-gray-600 dark:text-gray-400">No customers found for &quot;{query}&quot;</p>
       </div>
     );
   }

@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     // Parse query parameters
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get('query') || '';
-    const status = searchParams.get('status') as any;
+    const status = searchParams.get('status') as string | null;
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const sort = searchParams.get('sort') || 'created_at';

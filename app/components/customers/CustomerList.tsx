@@ -94,6 +94,7 @@ export function CustomerList({
     }
   }, [customerToDelete, deleteCustomer]);
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStatusChange = useCallback((e: React.MouseEvent, customer: Customer, newStatus: CustomerStatus) => {
     e.stopPropagation(); // Prevent row click
     updateCustomerStatus(customer.id, newStatus);
