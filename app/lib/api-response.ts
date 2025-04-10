@@ -1,5 +1,14 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { 
+  AppError, 
+  ValidationError, 
+  AuthenticationError, 
+  AuthorizationError, 
+  NotFoundError, 
+  DatabaseError, 
+  handleApiError 
+} from '@/app/lib/errors';
 
 /**
  * Standard API response format
@@ -60,21 +69,22 @@ export function errorResponse(
  * Handle validation errors from Zod
  */
 export function handleValidationError(error: z.ZodError) {
-  const formattedErrors = error.errors.map((err) => ({
-    path: err.path.join('.'),
-    message: err.message,
-  }));
+  // Format Zod errors into a more user-friendly format
+  const formattedErrors: Record<string, string[]> = {};
+  
+  error.errors.forEach((err) => {
+    const path = err.path.join('.');
+    if (!formattedErrors[path]) {
+      formattedErrors[path] = [];
+    }
+    formattedErrors[path].push(err.message);
+  });
 
-  return errorResponse(
-    'Validation error',
-    400,
-    'VALIDATION_ERROR',
-    formattedErrors
-  );
+  throw new ValidationError('Validation error', formattedErrors);
 }
 
 /**
- * Handle Supabase errors
+ * Handle Supabase errors by converting them to our custom error types
  */
 export function handleSupabaseError(error: any, defaultMessage = 'Database operation failed') {
   console.error('Supabase error:', error);
@@ -85,27 +95,66 @@ export function handleSupabaseError(error: any, defaultMessage = 'Database opera
   // Extract error code
   const code = error.code || 'DATABASE_ERROR';
   
-  // Determine appropriate status code
-  let status = 500;
-  
+  // Map Supabase errors to our custom error types
   if (code === 'PGRST116') {
     // Resource not found error
-    status = 404;
+    throw new NotFoundError(message);
   } else if (code === '23505') {
     // Unique constraint violation
-    status = 409;
+    throw new ValidationError(`Duplicate entry: ${message}`, {
+      general: [message]
+    });
   } else if (code === '23503') {
     // Foreign key constraint violation
-    status = 400;
-  } else if (code === '42P01') {
-    // Undefined table
-    status = 500;
-  } else if (code === '42703') {
-    // Undefined column
-    status = 500;
+    throw new ValidationError(`Invalid reference: ${message}`, {
+      general: [message]
+    });
+  } else if (code === 'PGRST301') {
+    // Authentication required
+    throw new AuthenticationError(message);
+  } else if (code === '42501') {
+    // Permission denied
+    throw new AuthorizationError(message);
+  } else {
+    // Generic database error
+    throw new DatabaseError(message, error);
   }
+}
+
+/**
+ * Wrap a route handler with error handling
+ */
+export function withErrorHandling<Args extends any[], T>(
+  handler: (...args: Args) => Promise<T>
+) {
+  return async (...args: Args) => {
+    try {
+      return await handler(...args);
+    } catch (error) {
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        return handleApiError(new ValidationError('Validation error', formatZodError(error)));
+      }
+      
+      // Handle other errors
+      return handleApiError(error);
+    }
+  };
+}
+
+/**
+ * Format Zod errors
+ */
+function formatZodError(error: z.ZodError): Record<string, string[]> {
+  const formattedErrors: Record<string, string[]> = {};
   
-  return errorResponse(message, status, code, {
-    details: error.details || error.hint || null,
+  error.errors.forEach((err) => {
+    const path = err.path.join('.') || 'general';
+    if (!formattedErrors[path]) {
+      formattedErrors[path] = [];
+    }
+    formattedErrors[path].push(err.message);
   });
+  
+  return formattedErrors;
 }
