@@ -158,7 +158,7 @@
     - app/dashboard/error.tsx: Error handling for dashboard
   - **Step Dependencies**: Step 3, Step 5, Step 7
 
-- [ ] Step 11: Implement Customer List Page
+- [x] Step 11: Implement Customer List Page
   - **Task**: Create the page for viewing all customers with pagination and search
   - **Files**:
     - app/customers/page.tsx: Customer list page component
@@ -166,7 +166,7 @@
     - app/customers/error.tsx: Error handling for customer list
   - **Step Dependencies**: Step 9
 
-- [ ] Step 12: Implement Customer Detail Page
+- [x] Step 12: Implement Customer Detail Page
   - **Task**: Create the page for viewing detailed customer information
   - **Files**:
     - app/customers/[id]/page.tsx: Customer detail page component
@@ -174,7 +174,7 @@
     - app/customers/[id]/error.tsx: Error handling for customer detail
   - **Step Dependencies**: Step 6, Step 9
 
-- [ ] Step 13: Implement Customer Creation Page
+- [x] Step 13: Implement Customer Creation Page
   - **Task**: Create the page for adding new customers
   - **Files**:
     - app/customers/new/page.tsx: New customer page component
@@ -182,7 +182,7 @@
     - app/customers/new/error.tsx: Error handling for new customer page
   - **Step Dependencies**: Step 8
 
-- [ ] Step 14: Implement Customer Edit Page
+- [x] Step 14: Implement Customer Edit Page
   - **Task**: Create the page for editing existing customers
   - **Files**:
     - app/customers/[id]/edit/page.tsx: Customer edit page component
@@ -190,7 +190,7 @@
     - app/customers/[id]/edit/error.tsx: Error handling for edit page
   - **Step Dependencies**: Step 8, Step 12
 
-- [ ] Step 15: Implement Settings Page
+- [x] Step 15: Implement Settings Page
   - **Task**: Create the user settings page
   - **Files**:
     - app/settings/page.tsx: Settings page component
