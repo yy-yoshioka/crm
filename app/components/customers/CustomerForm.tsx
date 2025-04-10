@@ -6,6 +6,7 @@ import { Select } from '@/app/components/ui/Select';
 import { statusOptions } from './CustomerFormSchema';
 import useCustomerForm from '@/app/hooks/useCustomerForm';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { FormField, FormErrors } from '@/app/components/ui/FormError';
 
 interface CustomerFormProps {
   /**
@@ -47,6 +48,14 @@ export function CustomerForm({ customer, onCancel }: CustomerFormProps) {
       </div>
     );
   }
+
+  // Format errors for FormErrors component
+  const formattedErrors = errors.general ? { general: [errors.general] } : {};
+  Object.entries(errors).forEach(([key, value]) => {
+    if (key !== 'general' && value) {
+      formattedErrors[key] = [value];
+    }
+  });
   
   return (
     <form
@@ -56,65 +65,72 @@ export function CustomerForm({ customer, onCancel }: CustomerFormProps) {
       }}
       className="space-y-6"
     >
-      {/* General error message */}
-      {errors.general && (
-        <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
-          {errors.general}
-        </div>
-      )}
+      {/* General error messages */}
+      <FormErrors errors={formattedErrors} />
       
       {/* Name field */}
-      <Input
-        label="Name"
-        id="name"
+      <FormField
         name="name"
-        value={formData.name}
-        onChange={(e) => handleChange('name', e.target.value)}
+        label="Name"
         error={errors.name}
         required
-      />
+      >
+        <Input
+          value={formData.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+        />
+      </FormField>
       
       {/* Email field */}
-      <Input
-        label="Email"
-        id="email"
+      <FormField
         name="email"
-        type="email"
-        value={formData.email || ''}
-        onChange={(e) => handleChange('email', e.target.value)}
+        label="Email"
         error={errors.email}
-      />
+        description="We'll never share your email with anyone else."
+      >
+        <Input
+          type="email"
+          value={formData.email || ''}
+          onChange={(e) => handleChange('email', e.target.value)}
+        />
+      </FormField>
       
       {/* Phone field */}
-      <Input
-        label="Phone"
-        id="phone"
+      <FormField
         name="phone"
-        value={formData.phone || ''}
-        onChange={(e) => handleChange('phone', e.target.value)}
+        label="Phone"
         error={errors.phone}
-      />
+      >
+        <Input
+          value={formData.phone || ''}
+          onChange={(e) => handleChange('phone', e.target.value)}
+        />
+      </FormField>
       
       {/* Address field */}
-      <Input
-        label="Address"
-        id="address"
+      <FormField
         name="address"
-        value={formData.address || ''}
-        onChange={(e) => handleChange('address', e.target.value)}
+        label="Address"
         error={errors.address}
-      />
+      >
+        <Input
+          value={formData.address || ''}
+          onChange={(e) => handleChange('address', e.target.value)}
+        />
+      </FormField>
       
       {/* Status field */}
-      <Select
-        label="Status"
-        id="status"
+      <FormField
         name="status"
-        value={formData.status}
-        options={statusOptions}
-        onChange={(value) => handleChange('status', value)}
+        label="Status"
         error={errors.status}
-      />
+      >
+        <Select
+          value={formData.status}
+          options={statusOptions}
+          onChange={(value) => handleChange('status', value)}
+        />
+      </FormField>
       
       {/* Form actions */}
       <div className="flex justify-end space-x-4 pt-4">

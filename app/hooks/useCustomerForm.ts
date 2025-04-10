@@ -51,14 +51,37 @@ export default function useCustomerForm(customerId?: string) {
           address: data.address,
           status: data.status,
         });
+      } else {
+        throw new Error('Customer not found');
       }
     } catch (error) {
       console.error('Error fetching customer:', error);
-      setErrors({ general: 'Failed to load customer data' });
+      
+      // Determine a user-friendly error message based on the error
+      if (error && typeof error === 'object' && 'code' in error) {
+        const supabaseError = error as { code: string; message?: string };
+        
+        if (supabaseError.code === 'PGRST116') {
+          setErrors({ general: 'Customer not found' });
+        } else if (supabaseError.code === 'PGRST301') {
+          setErrors({ general: 'You are not authorized to view this customer' });
+        } else {
+          setErrors({ general: 'Failed to load customer data. Please try again later.' });
+        }
+      } else {
+        setErrors({ general: 'Failed to load customer data' });
+      }
+      
+      // Redirect to the customers list after a short delay if customer not found
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'PGRST116') {
+        setTimeout(() => {
+          router.push('/customers');
+        }, 2000);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [supabase]);
+  }, [supabase, router]);
   
   // Load customer data if editing
   useEffect(() => {
@@ -121,22 +144,55 @@ export default function useCustomerForm(customerId?: string) {
     } catch (error: unknown) {
       console.error('Error submitting form:', error);
       
-      // Handle validation errors
-      if (error && typeof error === 'object' && 'errors' in error) {
-        const validationError = error as { errors: Array<{ path: string[]; message: string }> };
-        const formattedErrors: CustomerFormErrors = {};
-        
-        validationError.errors.forEach((err) => {
-          const path = err.path?.[0];
-          if (path && typeof path === 'string') {
-            formattedErrors[path as keyof CustomerFormData] = err.message;
-          }
-        });
-        
-        setErrors(formattedErrors);
-      } else {
+      // Handle Zod validation errors
+      if (error instanceof Error && 'format' in error && typeof error.format === 'function') {
+        try {
+          // This is a Zod error - format it in a friendly way
+          const zodError = error as { format: () => any };
+          const formattedError = zodError.format();
+          const newErrors: CustomerFormErrors = {};
+          
+          // Process the formatted Zod error
+          Object.entries(formattedError).forEach(([key, value]) => {
+            if (key === '_errors') {
+              if (Array.isArray(value) && value.length > 0) {
+                newErrors.general = value[0] as string;
+              }
+            } else {
+              const fieldErrors = value as { _errors: string[] };
+              if (fieldErrors._errors && fieldErrors._errors.length > 0) {
+                newErrors[key as keyof CustomerFormData] = fieldErrors._errors[0];
+              }
+            }
+          });
+          
+          setErrors(newErrors);
+        } catch (_) {
+          // If we can't parse the Zod error, fall back to a generic error
+          setErrors({ general: 'Invalid form data. Please check your entries.' });
+        }
+      } 
+      // Handle Supabase errors
+      else if (error && typeof error === 'object' && 'code' in error && 'message' in error) {
+        // Determine user-friendly error based on Supabase error code
+        if (error.code === '23505') { // Unique constraint violation
+          setErrors({ 
+            general: 'A customer with this information already exists.' 
+          });
+        } else if (error.code === '23503') { // Foreign key constraint
+          setErrors({ 
+            general: 'Invalid reference to another record.' 
+          });
+        } else {
+          setErrors({
+            general: 'A database error occurred. Please try again later.'
+          });
+        }
+      } 
+      // Handle other errors
+      else {
         setErrors({
-          general: 'An error occurred while saving the customer',
+          general: 'An error occurred while saving the customer'
         });
       }
     } finally {
