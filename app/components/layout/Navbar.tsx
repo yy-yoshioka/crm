@@ -4,9 +4,9 @@ import { Fragment, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/app/lib/utils';
-import { useAuth } from '@/app/hooks/useAuth';
 import { Button } from '../ui/Button';
 import { UserRole } from '@/app/lib/database.types';
+import useAuth from '@/app/hooks/useAuth';
 
 // Define navigation items with icons
 const navigationItems = [
