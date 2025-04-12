@@ -1,6 +1,6 @@
 'use client';
 
-import { createClient } from '@/app/lib/supabase/client';
+import { supabase } from '@/app/lib/supabase/client';
 import { UserRole } from '@/app/lib/database.types';
 import { useAuth as useAuthContext } from '@/app/components/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,6 @@ export default function useAuth() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   /**
    * Sign in with email and password

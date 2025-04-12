@@ -202,9 +202,9 @@ export function Table<T>({
     return (
       <div className="space-y-4">
         {/* Regular table view (hidden on mobile) */}
-        <div className="hidden sm:block relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
+        <div className="hidden sm:block relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800 scroll-mt-16">
           <table className={cn('w-full text-sm text-left', className)}>
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+            <thead className="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
               <tr>
                 {columns.map((column, index) => (
                   <th
@@ -352,7 +352,7 @@ export function Table<T>({
   return (
     <div className="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
       <table className={cn('w-full text-sm text-left', className)}>
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+        <thead className="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
           <tr>
             {columns.map((column, index) => (
               <th

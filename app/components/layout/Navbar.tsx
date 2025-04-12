@@ -124,7 +124,7 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        'sticky top-0 z-20 w-full bg-white dark:bg-gray-900 transition-shadow duration-200',
+        'position-sticky top-0 z-20 w-full bg-white dark:bg-gray-900 transition-shadow duration-200',
         scrolled ? 'shadow' : ''
       )}
     >

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { createClient } from '@/app/lib/supabase/client';
+import { supabase } from '@/app/lib/supabase/client';
 import { UserRole } from '@/app/lib/database.types';
 
 interface AuthContextType {
@@ -33,7 +33,6 @@ export default function AuthProvider({
   const [user, setUser] = useState<User | null>(initialUser);
   const [userRole, setUserRole] = useState<UserRole | null>(initialRole);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
 
   // Listen for auth state changes
   useEffect(() => {

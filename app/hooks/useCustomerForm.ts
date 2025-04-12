@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/app/lib/supabase/client';
 import {
   customerFormSchema,
   CustomerFormData,
   CustomerFormErrors,
 } from '@/app/components/customers/CustomerFormSchema';
+import { supabase } from '../lib/supabase/client';
+import useAuth from './useAuth';
 
 /**
  * Custom hook for managing customer form state and submission
@@ -15,7 +16,7 @@ import {
  */
 export default function useCustomerForm(customerId?: string) {
   const router = useRouter();
-  const supabase = createClient();
+  const { user } = useAuth();
 
   // Form state
   const [formData, setFormData] = useState<CustomerFormData>({
@@ -24,6 +25,7 @@ export default function useCustomerForm(customerId?: string) {
     phone: null,
     address: null,
     status: 'pending',
+    created_by: user?.id || '',
   });
 
   // Loading and error states
@@ -55,6 +57,7 @@ export default function useCustomerForm(customerId?: string) {
             phone: data.phone,
             address: data.address,
             status: data.status,
+            created_by: data.created_by,
           });
         } else {
           throw new Error('Customer not found');
@@ -96,7 +99,7 @@ export default function useCustomerForm(customerId?: string) {
         setIsLoading(false);
       }
     },
-    [supabase, router]
+    [router]
   );
 
   // Load customer data if editing
@@ -137,9 +140,8 @@ export default function useCustomerForm(customerId?: string) {
     try {
       // Validate form data
       const validatedData = customerFormSchema.parse(formData);
-
       if (customerId) {
-        // Update existing customer
+        // Update existing customer (still using Supabase directly)
         const { error } = await supabase
           .from('customers')
           .update(validatedData)
@@ -150,12 +152,22 @@ export default function useCustomerForm(customerId?: string) {
         router.push(`/customers/${customerId}`);
         router.refresh();
       } else {
-        // Create new customer
-        const { error } = await supabase
-          .from('customers')
-          .insert(validatedData);
+        // Create new customer using the API endpoint (bypasses RLS)
 
-        if (error) throw error;
+        const response = await fetch('/api/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(validatedData),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          console.error('API error:', result);
+          throw new Error(result.error || 'Failed to create customer');
+        }
 
         router.push('/customers');
         router.refresh();
@@ -198,28 +210,40 @@ export default function useCustomerForm(customerId?: string) {
           });
         }
       }
-      // Handle Supabase errors
+      // Handle Supabase or API errors
       else if (
         error &&
         typeof error === 'object' &&
-        'code' in error &&
-        'message' in error
+        ('code' in error || 'message' in error)
       ) {
-        // Determine user-friendly error based on Supabase error code
-        if (error.code === '23505') {
-          // Unique constraint violation
+        if (error instanceof Error) {
           setErrors({
-            general: 'A customer with this information already exists.',
+            general:
+              error.message || 'An error occurred while saving the customer',
           });
-        } else if (error.code === '23503') {
-          // Foreign key constraint
-          setErrors({
-            general: 'Invalid reference to another record.',
-          });
-        } else {
-          setErrors({
-            general: 'A database error occurred. Please try again later.',
-          });
+        } else if ('code' in error) {
+          // Determine user-friendly error based on error code
+          if (error.code === '23505') {
+            // Unique constraint violation
+            setErrors({
+              general: 'A customer with this information already exists.',
+            });
+          } else if (error.code === '23503') {
+            // Foreign key constraint
+            setErrors({
+              general: 'Invalid reference to another record.',
+            });
+          } else if (error.code === '42501') {
+            // Permission denied
+            setErrors({
+              general:
+                'You do not have permission to create customers. Please contact an administrator.',
+            });
+          } else {
+            setErrors({
+              general: 'A database error occurred. Please try again later.',
+            });
+          }
         }
       }
       // Handle other errors
@@ -243,6 +267,7 @@ export default function useCustomerForm(customerId?: string) {
       phone: null,
       address: null,
       status: 'pending',
+      created_by: user?.id || '',
     });
     setErrors({});
   };

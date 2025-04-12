@@ -1,124 +1,181 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/app/lib/supabase/server';
-import { createCustomerSchema } from '@/app/lib/validations/customer';
+import { customerFormSchema } from '@/app/components/customers/CustomerFormSchema';
 import { z } from 'zod';
-import {
-  successResponse,
-  withErrorHandling,
-  handleSupabaseError,
-} from '@/app/lib/api-response';
-import { AuthenticationError } from '@/app/lib/errors';
 
 /**
  * GET /api/customers
  * Get a paginated list of customers
  */
-export const GET = withErrorHandling(async (request: NextRequest) => {
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
 
-  // Check authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    throw new AuthenticationError();
-  }
-
-  // Parse query parameters
-  const searchParams = request.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = parseInt(searchParams.get('limit') || '10', 10);
-  const status = searchParams.get('status') as string | null;
+  // Pagination parameters
+  const searchParams = req.nextUrl.searchParams;
+  const page = parseInt(searchParams.get('page') || '1');
+  const limit = parseInt(searchParams.get('limit') || '10');
+  const status = searchParams.get('status');
   const sort = searchParams.get('sort') || 'created_at';
   const order = searchParams.get('order') || 'desc';
+  const offset = (page - 1) * limit;
 
-  // Validate parameters
-  const paramsSchema = z.object({
-    page: z.number().int().positive().default(1),
-    limit: z.number().int().min(1).max(100).default(10),
-    status: z.enum(['active', 'inactive', 'pending']).optional(),
-    sort: z
-      .enum(['name', 'email', 'created_at', 'updated_at', 'status'])
-      .default('created_at'),
-    order: z.enum(['asc', 'desc']).default('desc'),
-  });
+  try {
+    // Build the query
+    let query = supabase.from('customers').select('*', { count: 'exact' });
 
-  const params = paramsSchema.parse({
-    page,
-    limit,
-    status: status || undefined,
-    sort,
-    order,
-  });
+    // Add status filter if provided
+    if (status) {
+      query = query.eq('status', status);
+    }
 
-  // Calculate pagination
-  const from = (params.page - 1) * params.limit;
-  const to = from + params.limit - 1;
+    // Add sorting
+    query = query.order(sort, { ascending: order === 'asc' });
 
-  // Build query
-  let query = supabase.from('customers').select('*', { count: 'exact' });
+    // Add pagination
+    query = query.range(offset, offset + limit - 1);
 
-  // Add filters
-  if (params.status) {
-    query = query.eq('status', params.status);
+    // Execute the query
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error('Error fetching customers:', error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: error.message },
+        },
+        { status: 500 }
+      );
+    }
+
+    // Calculate pagination info
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    return NextResponse.json({
+      success: true,
+      data,
+      pagination: {
+        total: count || 0,
+        page,
+        limit,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    console.error('Error in GET /api/customers:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: { message: 'Failed to fetch customers' },
+      },
+      { status: 500 }
+    );
   }
-
-  // Add sorting
-  query = query.order(params.sort, { ascending: params.order === 'asc' });
-
-  // Add pagination
-  query = query.range(from, to);
-
-  // Execute query
-  const { data, error, count } = await query;
-
-  if (error) {
-    handleSupabaseError(error);
-  }
-
-  // Calculate pagination info
-  const totalPages = Math.ceil((count || 0) / params.limit);
-
-  return successResponse(data, 200, {
-    total: count || 0,
-    page: params.page,
-    limit: params.limit,
-    totalPages,
-  });
-});
+}
 
 /**
  * POST /api/customers
  * Create a new customer
  */
-export const POST = withErrorHandling(async (request: NextRequest) => {
-  const supabase = await createClient();
+export async function POST(req: NextRequest) {
+  try {
+    // Parse request body
+    const body = await req.json();
 
-  // Check authentication
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    throw new AuthenticationError();
+    // Validate the incoming data
+    const validatedData = customerFormSchema.parse(body);
+
+    // Get current user for created_by field if not provided
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: 'Authentication required' },
+        },
+        { status: 401 }
+      );
+    }
+
+    // Insert the customer - server-side operation bypasses RLS
+    const { data, error } = await supabase
+      .from('customers')
+      .insert({
+        ...validatedData,
+        created_by: validatedData.created_by || user.id,
+      })
+      .select('id')
+      .single();
+
+    if (error) {
+      console.error('Error creating customer:', error);
+
+      // Handle specific database errors
+      if (error.code === '23505') {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              message: 'A customer with this information already exists',
+            },
+          },
+          { status: 409 }
+        );
+      }
+
+      if (error.code === '23503') {
+        return NextResponse.json(
+          {
+            success: false,
+            error: { message: 'Failed to link customer to required data' },
+          },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: { message: 'Failed to create customer', details: error },
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error in POST /api/customers:', error);
+
+    // Handle Zod validation errors
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            message: 'Invalid customer data',
+            details: error.format(),
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: { message: 'An unexpected error occurred' },
+      },
+      { status: 500 }
+    );
   }
-
-  // Parse and validate request body
-  const body = await request.json();
-  const validatedData = createCustomerSchema.parse(body);
-
-  // Create customer in database
-  const { data, error } = await supabase
-    .from('customers')
-    .insert({
-      ...validatedData,
-      created_by: user.id,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    handleSupabaseError(error);
-  }
-
-  return successResponse(data, 201);
-});
+}

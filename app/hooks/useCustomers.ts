@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { CustomerStatus } from '@/app/lib/database.types';
 import { useOptimisticList } from '@/app/hooks/useOptimisticUpdate';
 import { useToast } from '../components/ui/Toast';
@@ -58,7 +58,6 @@ export default function useCustomers(
   initialParams?: CustomerListParams
 ): UseCustomersReturn {
   // Router and URL state
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { addToast } = useToast();
@@ -117,10 +116,11 @@ export default function useCustomers(
         }
       });
 
-      // Update the URL
-      router.push(`${pathname}?${newParams.toString()}`);
+      // Update the URL without triggering a navigation
+      const newUrl = `${pathname}?${newParams.toString()}`;
+      window.history.pushState({}, '', newUrl);
     },
-    [pathname, router, searchParams]
+    [pathname, searchParams]
   );
 
   /**
@@ -281,10 +281,26 @@ export default function useCustomers(
     [optimisticUpdateCustomer]
   );
 
-  // Fetch data when dependencies change
+  // Fetch data when URL parameters change
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        await fetchCustomers();
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Error fetching customers:', error);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      controller.abort();
+    };
+  }, [fetchCustomers, searchParams]);
 
   // Handle page change
   const handlePageChange = useCallback(

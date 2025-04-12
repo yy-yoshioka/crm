@@ -31,6 +31,7 @@ export const customerFormSchema = z
       .or(z.literal(''))
       .transform(val => (val === '' ? null : val)),
     status: statusEnum.default('pending'),
+    created_by: z.string().default(''),
   })
   .refine(
     data => {
